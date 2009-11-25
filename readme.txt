@@ -41,7 +41,7 @@ See the [Google Calendar Support Page](http://www.google.com/support/calendar/bi
 
 == Screenshots ==
 
-None yet.
+1. The widget showing the upcoming Google developer calendar events on the sidebar of the default Wordpress theme.
 
 == Changelog ==
 
