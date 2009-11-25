@@ -11,10 +11,10 @@ This plugin installs a sidebar widget that can show the upcoming events from a G
 == Description ==
 
 This plugin installs a widget for showing a Google Calendar agenda on the sidebar.
-Once installed it adds a sidebar widget called “Google Calendar” that may be dragged into your sidebar.
+Once installed it adds a sidebar widget called 'Google Calendar' that may be dragged into your sidebar.
 Each widget can be configured with a URL of the calendar feed, a title, and the number of agenda items to show.
 
-The calendar feed is the URL you get when clicking on the XML icon next to “Calendar Address:” in the Google Calendar settings. See the full instructions here.
+The calendar feed is the URL you get when clicking on the XML icon next to 'Calendar Address:' in the Google Calendar settings. See the full instructions here.
 
 Multiple widgets can be used on the same page and each one can reference a different feed.
 
