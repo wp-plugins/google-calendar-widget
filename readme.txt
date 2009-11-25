@@ -1,4 +1,4 @@
-=== ko-calendar ===
+=== Google Calendar Widget ===
 Contributors: poco
 Donate link: http://notions.okuda.ca
 Tags: google, calendar
