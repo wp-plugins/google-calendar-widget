@@ -1,12 +1,14 @@
 <?php
 /*
-Plugin Name: Wordpress Google Calendar Widget
-Plugin URI: http://notions.okuda.ca
+Plugin Name: Google Calendar Widget
+Plugin URI: http://notions.okuda.ca/wordpress-plugins/google-calendar-widget/
 Description: This plugin adds a sidebar widget containing an agenda from a Google Calendar.  It is based on the Google Calendar samples and inspired by wpng-calendar.  It is smaller and simpler than wpng-calendar and allows for multiple widgets to each show their own agenda.
 Version: 0.0.1
 Author: Kaz Okuda
 Author URI: http://notions.okuda.ca
 */
+
+define('KO_CALENDAR_URL', WP_PLUGIN_URL . '/google-calendar-widget');
 
 function ko_calendar_load()
 {
@@ -32,7 +34,7 @@ function ko_calendar_load()
 			echo $before_widget;
 			echo $before_title . '<div class="ko-calendar-widget-title" id="' . $title_id . '">' . $title . '</div>' . $after_title;
 			echo '<div class="ko-calendar-widget-events" id="' . $event_id . '">';
-			echo '<div class="ko-calendar-widget-loading"><img class="ko-calendar-widget-image" src="' . WP_PLUGIN_URL . '/ko-calendar/loading.gif"/></div>';
+			echo '<div class="ko-calendar-widget-loading"><img class="ko-calendar-widget-image" src="' . KO_CALENDAR_URL . '/loading.gif"/></div>';
 			echo '</div>';
 			echo $after_widget;
 			?>
@@ -83,17 +85,17 @@ function ko_calendar_load()
 	
 	function ko_calendar_head()
 	{
-		echo '<link type="text/css" rel="stylesheet" href="' . WP_PLUGIN_URL . '/ko-calendar/ko-calendar.css" />';
+		echo '<link type="text/css" rel="stylesheet" href="' . KO_CALENDAR_URL . '/ko-calendar.css" />';
 	}
 
 	function ko_calendar_init()
 	{
 		// I believe that the google apikey is no longer needed
 		wp_enqueue_script('google', 'http://www.google.com/jsapi', false, 1);
-		wp_enqueue_script('date-js', WP_PLUGIN_URL . '/ko-calendar/date.js', null, 'alpha-1');
-		wp_enqueue_script('wiky-js', WP_PLUGIN_URL . '/ko-calendar/wiky.js', null, '1.0');
-		//wp_enqueue_script('ko-calendar-test', WP_PLUGIN_URL . '/ko-calendar/ko-calendar-test.js', array('date-js', 'google'));
-		wp_enqueue_script('ko-calendar', WP_PLUGIN_URL . '/ko-calendar/ko-calendar.js', array('date-js', 'google'));
+		wp_enqueue_script('date-js', KO_CALENDAR_URL . '/date.js', null, 'alpha-1');
+		wp_enqueue_script('wiky-js', KO_CALENDAR_URL . '/wiky.js', null, '1.0');
+		//wp_enqueue_script('ko-calendar-test', KO_CALENDAR_URL . '/ko-calendar-test.js', array('date-js', 'google'));
+		wp_enqueue_script('ko-calendar', KO_CALENDAR_URL . '/ko-calendar.js', array('date-js', 'google'));
 	}
 
 	function ko_calendar_register_widget()

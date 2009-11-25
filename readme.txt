@@ -22,7 +22,7 @@ See also [http://notions.okuda.ca/wordpress-plugins/google-calendar-widget/](htt
 
 == Installation ==
 
-1. Upload all the files to the `/wp-content/plugins/ko-calendar` directory
+1. Upload all the files to the `/wp-content/plugins/google-calendar-widget` directory
 1. Activate the plugin through the 'Plugins' menu in WordPress
 1. Drag the 'Google Calendar' widget to your sidebar
 1. Fill out the settings for each instance in your sidebar.  You can ge the calendar URL from your Google calendar settings, just be sure to change the "/basic" to "/full".
