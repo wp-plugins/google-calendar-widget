@@ -1,7 +1,7 @@
 === Google Calendar Widget ===
 Contributors: poco
 Donate link: http://notions.okuda.ca
-Tags: google, calendar
+Tags: google, calendar, widget
 Requires at least: 2.8
 Tested up to: 2.8.5
 Stable tag: 1.0

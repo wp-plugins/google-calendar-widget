@@ -305,7 +305,7 @@ var ko_calendar = function ()
 		//ko_calendar_test.testCalendar();
 		//return;
 
-		var service = new google.gdata.calendar.CalendarService('gdata-js-client-samples-simple');
+		var service = new google.gdata.calendar.CalendarService('google-calendar-widget');
 		var query = new google.gdata.calendar.CalendarEventQuery(calendarUrl);
 		query.setOrderBy('starttime');
 		query.setSortOrder('ascending');
