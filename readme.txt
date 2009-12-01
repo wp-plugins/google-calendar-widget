@@ -39,6 +39,33 @@ For example:
 
 See the [Google Calendar Support Page](http://www.google.com/support/calendar/bin/answer.py?hl=en&answer=37103).  Just don't forget to change the "/basic" to "/full".
 
+= How do I change the language of the dates =
+
+You can [download localized versions of date.js from here](http://code.google.com/p/datejs/downloads/list).  Find the correct language version in the "build" folder of the zip file, and replace the date.js in the plugin folder.
+
+= How can I change the format of the dates and times =
+
+The date and time is formatted using the date.js library.
+Look for code like the following two lines in ko-calendar.js and change the format argument to match the format you want.
+
+	startJSDate.toString("ddd, MMM d, yyyy h:mm tt")
+	dateString = startJSDate.toString('MMM dd');
+
+The formatting represents how the information will look on the page "MMM" translates to the abbreviated name of the month.
+ 
+Take a look at the documentation for how you can change that formatting string to match what you want.
+http://code.google.com/p/datejs/wiki/FormatSpecifiers
+ 
+For example, you can change the following
+
+	dateString = startJSDate.toString('MMM dd');
+
+to this
+
+    dateString = startJSDate.toString('dd.MM.yyyy');
+
+to change the agenda item "Jan 2" to "02.01.2009"
+	
 == Screenshots ==
 
 1. The widget showing the upcoming Google developer calendar events on the sidebar of the default Wordpress theme.
