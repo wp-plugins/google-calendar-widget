@@ -25,7 +25,9 @@ function ko_calendar_load()
 		{
 			extract($args);
 			$title = empty($instance['title']) ? 'Calendar' : $instance['title'];
-			$url = empty($instance['url']) ? 'http://www.google.com/calendar/feeds/mtseymourskiclub%40gmail.com/public/full' : $instance['url'];
+			$url = empty($instance['url']) ? 'http://www.google.com/calendar/feeds/developer-calendar@google.com/public/full' : $instance['url'];
+			$url2 = empty($instance['url2']) ? '' : $instance['url2'];
+			$url3 = empty($instance['url3']) ? '' : $instance['url3'];
 			$maxresults = empty($instance['maxresults']) ? '5' : $instance['maxresults'];
 
 			$title_id = $this->get_field_id('widget_title');
@@ -39,7 +41,7 @@ function ko_calendar_load()
 			echo $after_widget;
 			?>
 			<script type="text/javascript" defer="true">
-				ko_calendar.loadCalendarDefered('<?php echo $title_id ?>', '<?php echo $event_id ?>', '<?php echo $url ?>', <?php echo $maxresults ?>);
+				ko_calendar.loadCalendarDefered('<?php echo $title_id ?>', '<?php echo $event_id ?>', <?php echo $maxresults ?>, '<?php echo $url ?>', '<?php echo $url2 ?>', '<?php echo $url3 ?>');
 			</script>
 			<?php
 		}
@@ -52,6 +54,8 @@ function ko_calendar_load()
 			$instance = $old_instance;
 			$instance['title'] = trim(strip_tags($new_instance['title']));
 			$instance['url'] = esc_url_raw(strip_tags($new_instance['url']));
+			$instance['url2'] = esc_url_raw(strip_tags($new_instance['url2']));
+			$instance['url3'] = esc_url_raw(strip_tags($new_instance['url3']));
 			$instance['maxresults'] = intval($new_instance['maxresults']);
 			return $instance;
 		}
@@ -61,6 +65,8 @@ function ko_calendar_load()
 			$instance = wp_parse_args( (array) $instance, array( 'title' => '', 'url' => '', 'maxresults' => '') );
 			$title = esc_attr($instance['title']);
 			$url = esc_url($instance['url']);
+			$url2 = esc_url($instance['url2']);
+			$url3 = esc_url($instance['url3']);
 			$maxresults = intval($instance['maxresults']);
 
 			?>
@@ -69,13 +75,21 @@ function ko_calendar_load()
 					<?php _e('Calendar Title:'); ?>
 					<input type="text" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" value="<?php echo $title; ?>" />
 				</label>
-				<label for="<?php echo $this->get_field_id('url'); ?>" style="line-height:35px;display:block;">
-					<?php _e('Calendar URL:'); ?>
-					<input type="text" id="<?php echo $this->get_field_id('url'); ?>" name="<?php echo $this->get_field_name('url'); ?>" value="<?php echo $url; ?>" />
-				</label>
 				<label for="<?php echo $this->get_field_id('maxresults'); ?>" style="line-height:35px;display:block;">
 					<?php _e('Maximum Results:'); ?>
 					<input type="text" id="<?php echo $this->get_field_id('maxresults'); ?>" name="<?php echo $this->get_field_name('maxresults'); ?>" value="<?php echo $maxresults; ?>" />
+				</label>
+				<label for="<?php echo $this->get_field_id('url'); ?>" style="line-height:35px;display:block;">
+					<?php _e('Calendar URL 1:'); ?>
+					<input type="text" id="<?php echo $this->get_field_id('url'); ?>" name="<?php echo $this->get_field_name('url'); ?>" value="<?php echo $url; ?>" />
+				</label>
+				<label for="<?php echo $this->get_field_id('url2'); ?>" style="line-height:35px;display:block;">
+					<?php _e('Calendar URL 2 (Optional):'); ?>
+					<input type="text" id="<?php echo $this->get_field_id('url2'); ?>" name="<?php echo $this->get_field_name('url2'); ?>" value="<?php echo $url2; ?>" />
+				</label>
+				<label for="<?php echo $this->get_field_id('url3'); ?>" style="line-height:35px;display:block;">
+					<?php _e('Calendar URL 3 (Optional):'); ?>
+					<input type="text" id="<?php echo $this->get_field_id('url3'); ?>" name="<?php echo $this->get_field_name('url3'); ?>" value="<?php echo $url3; ?>" />
 				</label>
 				<input type="hidden" name="<?php echo $this->get_field_name('submit'); ?>" id="<?php echo $this->get_field_id('submit'); ?>" value="1" />
 				</div>

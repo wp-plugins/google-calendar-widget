@@ -163,9 +163,9 @@ var ko_calendar = function ()
 	 *
 	 * @param {json} feedRoot is the root of the feed, containing all entries 
 	 */
-	function createListEvents(titleId, outputId)
+	function createListEvents(titleId, outputId, maxResults, googleService, urls)
 	{
-		return function(feedRoot) {
+		function processFinalFeed(feedRoot) {
 			var entries = feedRoot.feed.getEntries();
 			var eventDiv = document.getElementById(outputId);
 			if (eventDiv.childNodes.length > 0) {
@@ -256,7 +256,54 @@ var ko_calendar = function ()
 			if (eventList != null) {
 				eventDiv.appendChild(eventList);
 			}
-		};
+		}
+		
+		// Keep a list of all of the queries to be sorted later.
+		var sQueries = new Array();
+		
+		// Store the list of urls which we will be iterating through.
+		var sUrls = urls;
+
+		function callback(feedRoot)
+		{
+			sQueries.push(feedRoot);
+			
+			var url = '';
+			
+			// Skip blank urls.
+			do 
+			{
+				url = sUrls.pop();
+
+			} while (url == '');
+			
+			if (url != undefined)
+			{
+				var query = new google.gdata.calendar.CalendarEventQuery(url);
+				query.setOrderBy('starttime');
+				query.setSortOrder('ascending');
+				query.setFutureEvents(true);
+				query.setSingleEvents(true);
+				query.setMaxResults(maxResults);
+				googleService.getEventsFeed(query, callback, handleGDError);
+			}
+			else
+			{
+				// We are done.
+				// Merge the events in sQueries and apply them.				
+				// For now we just insert them individually.
+				for (var i=0; i < sQueries.length; i++)
+				{
+					if (sQueries[i])
+					{
+						processFinalFeed(sQueries[i]);
+					}
+				}
+			}
+		}
+		
+		return callback;
+		
 	}
 
 	/**
@@ -297,27 +344,39 @@ var ko_calendar = function ()
 	 * @param {string} titleId is the id of the element in which the title could be written.
 	 * @param {string} outputId is the id of the element in which the output is to be written.
 	 * @param {string} calendarUrl is the URL for a public calendar feed
+	 * @param {string} calendarUrl2 is the URL for a second public calendar feed
 	 * @param {number} maxResults is the maximum number of results to be written to the output element.
 	 */  
-	function loadCalendar(titleId, outputId, calendarUrl, maxResults)
+	function loadCalendar(titleId, outputId, maxResults, calendars)
 	{
 		// Uncomment the following two lines for offline testing.
 		//ko_calendar_test.testCalendar();
 		//return;
 
 		var service = new google.gdata.calendar.CalendarService('google-calendar-widget');
-		var query = new google.gdata.calendar.CalendarEventQuery(calendarUrl);
-		query.setOrderBy('starttime');
-		query.setSortOrder('ascending');
-		query.setFutureEvents(true);
-		query.setSingleEvents(true);
-		query.setMaxResults(maxResults);
-		service.getEventsFeed(query, createListEvents(titleId, outputId), handleGDError);
+		var requestFunc = createListEvents(titleId, outputId, maxResults, service, calendars);
+		
+		// Calling the created callback with no parameters will start the process of downloading
+		// the set of calendars pushed in with calendar.
+		requestFunc();
+		
+		// var query = new google.gdata.calendar.CalendarEventQuery(calendarUrl);
+		// query.setOrderBy('starttime');
+		// query.setSortOrder('ascending');
+		// query.setFutureEvents(true);
+		// query.setSingleEvents(true);
+		// query.setMaxResults(maxResults);
+		// service.getEventsFeed(query, createListEvents(titleId, outputId, service, new Array()), handleGDError);
 	}
 
-	result.loadCalendarDefered = function(titleId, outputId, calendarUrl, maxResults)
+	result.loadCalendarDefered = function(titleId, outputId, maxResults, calendarUrl, calendarUrl2, calendarUrl3)
 	{
-		google.setOnLoadCallback(function() { loadCalendar(titleId, outputId, calendarUrl, maxResults); });
+		var calendars = new Array();
+		calendars.push(calendarUrl);
+		calendars.push(calendarUrl2);
+		calendars.push(calendarUrl3);
+
+		google.setOnLoadCallback(function() { loadCalendar(titleId, outputId, maxResults, calendars); });
 	}
 	
 	result.init = function()
