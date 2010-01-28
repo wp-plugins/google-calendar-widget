@@ -3,6 +3,12 @@ var ko_calendar = function ()
 {
 	var result = {};
 
+	function log(message)
+	{
+		// Firebug debugging console
+		//console.log(message);
+	}
+	
 	function buildDate(entry)
 	{
 		/* display the date/time */
@@ -165,8 +171,69 @@ var ko_calendar = function ()
 	 */
 	function createListEvents(titleId, outputId, maxResults, googleService, urls)
 	{
+		function mergeFeeds(resultArray)
+		{
+			// This function merges the input arrays of feeds into one single feed array.
+			// It is assumed that each feed is sorted by date.  We find the earliest item in
+			// the lists by comparing the items at the start of each array.
+
+			// Store all of the feed arrays in an an array so we can "shift" items off the list.
+			var entries = new Array();
+			for (var i=0; i < resultArray.length; i++)
+			{
+				if (resultArray[i])
+				{
+					log("Feed " + i + " has " + resultArray[i].feed.getEntries().length + " entries");
+					entries.push(resultArray[i].feed.getEntries());
+				}
+			}
+			
+			log("Merging " + entries.length + " feeds");
+			
+			// Now look at the first element in each feed to figure out which one is first.
+			// Insert them in the output in chronological order.
+			var output = new Array();
+
+			while(true)
+			{
+				var firstStartTime = null;
+				var firstStartIndex = null;
+				for (var i=0; i < entries.length; i++)
+				{
+					var data = entries[i][0];
+					if (data != null)
+					{
+						var times = data.getTimes();
+						if (times.length > 0)
+						{
+							var startDateTime = times[0].getStartTime().getDate();
+							if (firstStartTime == null || startDateTime < firstStartTime)
+							{
+								log( startDateTime + " from feed " + i + " is before " + firstStartTime + " from feed " + firstStartIndex);
+								firstStartTime = startDateTime;
+								firstStartIndex = i;
+							}
+						}
+					}
+				}
+				if (firstStartTime != null)
+				{
+					// Add the entry to the output and shift it off the input.
+					output.push(entries[firstStartIndex].shift());
+				}
+				else
+				{
+					// No new items were found, so we must have run out.
+					break;
+				}
+			}
+			
+			return output;
+		}
+
 		function processFinalFeed(feedRoot) {
-			var entries = feedRoot.feed.getEntries();
+			// var entries = feedRoot.feed.getEntries();
+			var entries = feedRoot;
 			var eventDiv = document.getElementById(outputId);
 			if (eventDiv.childNodes.length > 0) {
 				eventDiv.removeChild(eventDiv.childNodes[0]);
@@ -266,7 +333,11 @@ var ko_calendar = function ()
 
 		function callback(feedRoot)
 		{
-			sQueries.push(feedRoot);
+			// If the feed is not invalid then push it into a list.
+			if (feedRoot)
+			{
+				sQueries.push(feedRoot);
+			}
 			
 			var url = '';
 			
@@ -292,13 +363,16 @@ var ko_calendar = function ()
 				// We are done.
 				// Merge the events in sQueries and apply them.				
 				// For now we just insert them individually.
-				for (var i=0; i < sQueries.length; i++)
-				{
-					if (sQueries[i])
-					{
-						processFinalFeed(sQueries[i]);
-					}
-				}
+				// for (var i=0; i < sQueries.length; i++)
+				// {
+					// if (sQueries[i])
+					// {
+						// processFinalFeed(sQueries[i]);
+					// }
+				// }
+				
+				var finalFeed = mergeFeeds(sQueries);
+				processFinalFeed(finalFeed);
 			}
 		}
 		
