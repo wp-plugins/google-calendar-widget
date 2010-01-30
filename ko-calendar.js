@@ -188,13 +188,13 @@ var ko_calendar = function ()
 				}
 			}
 			
-			log("Merging " + entries.length + " feeds");
+			log("Merging " + entries.length + " feeds into " + maxResults + " results.");
 			
 			// Now look at the first element in each feed to figure out which one is first.
 			// Insert them in the output in chronological order.
 			var output = new Array();
 
-			while(true)
+			while(output.length < maxResults)
 			{
 				var firstStartTime = null;
 				var firstStartIndex = null;
@@ -209,7 +209,7 @@ var ko_calendar = function ()
 							var startDateTime = times[0].getStartTime().getDate();
 							if (firstStartTime == null || startDateTime < firstStartTime)
 							{
-								log( startDateTime + " from feed " + i + " is before " + firstStartTime + " from feed " + firstStartIndex);
+								//log( startDateTime + " from feed " + i + " is before " + firstStartTime + " from feed " + firstStartIndex);
 								firstStartTime = startDateTime;
 								firstStartIndex = i;
 							}
@@ -219,6 +219,7 @@ var ko_calendar = function ()
 				if (firstStartTime != null)
 				{
 					// Add the entry to the output and shift it off the input.
+					log("Pushing " + startDateTime);
 					output.push(entries[firstStartIndex].shift());
 				}
 				else
@@ -227,7 +228,7 @@ var ko_calendar = function ()
 					break;
 				}
 			}
-			
+
 			return output;
 		}
 
@@ -433,14 +434,6 @@ var ko_calendar = function ()
 		// Calling the created callback with no parameters will start the process of downloading
 		// the set of calendars pushed in with calendar.
 		requestFunc();
-		
-		// var query = new google.gdata.calendar.CalendarEventQuery(calendarUrl);
-		// query.setOrderBy('starttime');
-		// query.setSortOrder('ascending');
-		// query.setFutureEvents(true);
-		// query.setSingleEvents(true);
-		// query.setMaxResults(maxResults);
-		// service.getEventsFeed(query, createListEvents(titleId, outputId, service, new Array()), handleGDError);
 	}
 
 	result.loadCalendarDefered = function(titleId, outputId, maxResults, calendarUrl, calendarUrl2, calendarUrl3)

@@ -30,7 +30,9 @@ See also [http://notions.okuda.ca/wordpress-plugins/google-calendar-widget/](htt
 For example:
 
 * Calendar Title : Google Developer Calendar 
-* Calendar URL: http://www.google.com/calendar/feeds/developer-calendar@google.com/public/full 
+* Calendar URL 1: http://www.google.com/calendar/feeds/developer-calendar@google.com/public/full 
+* Calendar URL 2: http://www.google.com/calendar/feeds/<some other feed>/public/full 
+* Calendar URL 3: <blank>
 * Maximum Results: 6 
 
 == Frequently Asked Questions ==
@@ -74,3 +76,6 @@ to change the agenda item "Jan 2" to "02.01.2009"
 
 = 1.0 =
 * Initial release
+
+= 1.1 =
+* Added ability to support multiple feeds (up to 3) from one widget.
