@@ -14,7 +14,7 @@ This plugin installs a widget for showing a Google Calendar agenda on the sideba
 Once installed it adds a sidebar widget called 'Google Calendar' that may be dragged into your sidebar.
 Each widget can be configured with a URL of the calendar feed, a title, and the number of agenda items to show.
 
-The calendar feed is the URL you get when clicking on the XML icon next to 'Calendar Address:' in the Google Calendar settings. See the full instructions here.
+The calendar feed is the URL you get when clicking on the XML icon next to 'Calendar Address:' in the Google Calendar settings. [See the full instructions here](http://www.google.com/support/calendar/bin/answer.py?hl=en&answer=37103).
 
 Multiple widgets can be used on the same page and each one can reference a different feed.
 
@@ -31,7 +31,7 @@ For example:
 
 * Calendar Title : Google Developer Calendar 
 * Calendar URL 1: http://www.google.com/calendar/feeds/developer-calendar@google.com/public/full 
-* Calendar URL 2: http://www.google.com/calendar/feeds/<some other feed>/public/full 
+* Calendar URL 2: http://www.google.com/calendar/feeds/insert your feed here/public/full 
 * Calendar URL 3: <blank>
 * Maximum Results: 6 
 
