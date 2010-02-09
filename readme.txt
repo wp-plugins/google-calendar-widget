@@ -67,7 +67,20 @@ to this
     dateString = startJSDate.toString('dd.MM.yyyy');
 
 to change the agenda item "Jan 2" to "02.01.2009"
-	
+
+= Why is HTML in my calendar entry getting mangled =
+
+The plugin uses the [wiky.js library](http://goessner.net/articles/wiky/) that generates HTML from a wiki-like markup language.
+It expects that the calendar item descriptions are marked up using that format.  This is done to simplify the formatting for users who are already familiar with wiki markup and make the calendar entries easier to read when not interpreted.
+
+If you wish to remove this transformation simply replace the following line in ko-calendar.js
+
+	bodyDiv.innerHTML = Wiky.toHtml(entryDesc);
+
+With
+
+	bodyDiv.innerHTML = entryDesc;
+
 == Screenshots ==
 
 1. The widget showing the upcoming Google developer calendar events on the sidebar of the default Wordpress theme.
