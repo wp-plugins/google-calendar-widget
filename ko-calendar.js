@@ -169,7 +169,7 @@ var ko_calendar = function ()
 	 *
 	 * @param {json} feedRoot is the root of the feed, containing all entries 
 	 */
-	function createListEvents(titleId, outputId, maxResults, googleService, urls)
+	function createListEvents(titleId, outputId, maxResults, autoExpand, googleService, urls)
 	{
 		function mergeFeeds(resultArray)
 		{
@@ -316,6 +316,10 @@ var ko_calendar = function ()
 
 					li.appendChild(entryTitle);
 
+					if (autoExpand)
+					{
+						entryTitle.onclick();
+					}
 				}
 
 				eventList.appendChild(li);
@@ -422,28 +426,28 @@ var ko_calendar = function ()
 	 * @param {string} calendarUrl2 is the URL for a second public calendar feed
 	 * @param {number} maxResults is the maximum number of results to be written to the output element.
 	 */  
-	function loadCalendar(titleId, outputId, maxResults, calendars)
+	function loadCalendar(titleId, outputId, maxResults, autoExpand, calendars)
 	{
 		// Uncomment the following two lines for offline testing.
 		//ko_calendar_test.testCalendar();
 		//return;
 
 		var service = new google.gdata.calendar.CalendarService('google-calendar-widget');
-		var requestFunc = createListEvents(titleId, outputId, maxResults, service, calendars);
-		
+		var requestFunc = createListEvents(titleId, outputId, maxResults, autoExpand, service, calendars);
+
 		// Calling the created callback with no parameters will start the process of downloading
 		// the set of calendars pushed in with calendar.
 		requestFunc();
 	}
 
-	result.loadCalendarDefered = function(titleId, outputId, maxResults, calendarUrl, calendarUrl2, calendarUrl3)
+	result.loadCalendarDefered = function(titleId, outputId, maxResults, autoExpand, calendarUrl, calendarUrl2, calendarUrl3)
 	{
 		var calendars = new Array();
 		calendars.push(calendarUrl);
 		calendars.push(calendarUrl2);
 		calendars.push(calendarUrl3);
 
-		google.setOnLoadCallback(function() { loadCalendar(titleId, outputId, maxResults, calendars); });
+		google.setOnLoadCallback(function() { loadCalendar(titleId, outputId, maxResults, autoExpand, calendars); });
 	}
 	
 	result.init = function()

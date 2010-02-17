@@ -92,3 +92,6 @@ With
 
 = 1.1 =
 * Added ability to support multiple feeds (up to 3) from one widget.
+
+= 1.2 =
+* Added "Expand Entries by Default" checkbox to widget settings to auto expand all the calendar entries.  If this is checked, the each calendar item will open as though they were clicked by default.

@@ -29,6 +29,7 @@ function ko_calendar_load()
 			$url2 = empty($instance['url2']) ? '' : $instance['url2'];
 			$url3 = empty($instance['url3']) ? '' : $instance['url3'];
 			$maxresults = empty($instance['maxresults']) ? '5' : $instance['maxresults'];
+			$autoexpand = empty($instance['autoexpand']) ? FALSE : $instance['autoexpand'];
 
 			$title_id = $this->get_field_id('widget_title');
 			$event_id = $this->get_field_id('widget_events');
@@ -41,7 +42,7 @@ function ko_calendar_load()
 			echo $after_widget;
 			?>
 			<script type="text/javascript" defer="true">
-				ko_calendar.loadCalendarDefered('<?php echo $title_id ?>', '<?php echo $event_id ?>', <?php echo $maxresults ?>, '<?php echo $url ?>', '<?php echo $url2 ?>', '<?php echo $url3 ?>');
+				ko_calendar.loadCalendarDefered('<?php echo $title_id ?>', '<?php echo $event_id ?>', <?php echo $maxresults ?>, <?php echo empty($autoexpand) ? 'false' : 'true' ?>, '<?php echo $url ?>', '<?php echo $url2 ?>', '<?php echo $url3 ?>');
 			</script>
 			<?php
 		}
@@ -57,17 +58,20 @@ function ko_calendar_load()
 			$instance['url2'] = esc_url_raw(strip_tags($new_instance['url2']));
 			$instance['url3'] = esc_url_raw(strip_tags($new_instance['url3']));
 			$instance['maxresults'] = intval($new_instance['maxresults']);
+			$instance['autoexpand'] = empty($new_instance['autoexpand']) ? FALSE : $new_instance['autoexpand'];
 			return $instance;
 		}
 		
 		function form($instance)
 		{
-			$instance = wp_parse_args( (array) $instance, array( 'title' => '', 'url' => '', 'maxresults' => '') );
+			$defaults = array( 'title' => '', 'url' => '', 'url2' => '', 'url3' => '', 'maxresults' => 5, 'autoexpand' => FALSE);
+			$instance = wp_parse_args( (array) $instance, $defaults );
 			$title = esc_attr($instance['title']);
 			$url = esc_url($instance['url']);
 			$url2 = esc_url($instance['url2']);
 			$url3 = esc_url($instance['url3']);
 			$maxresults = intval($instance['maxresults']);
+			$autoexpand = empty($instance['autoexpand']) ? FALSE : $instance['autoexpand'];
 
 			?>
 				<div>
@@ -78,6 +82,10 @@ function ko_calendar_load()
 				<label for="<?php echo $this->get_field_id('maxresults'); ?>" style="line-height:35px;display:block;">
 					<?php _e('Maximum Results:'); ?>
 					<input type="text" id="<?php echo $this->get_field_id('maxresults'); ?>" name="<?php echo $this->get_field_name('maxresults'); ?>" value="<?php echo $maxresults; ?>" />
+				</label>
+				<label for="<?php echo $this->get_field_id('autoexpand'); ?>" style="line-height:35px;display:block;">
+					<?php _e('Expand Entries by Default:'); ?>
+					<input type="checkbox" id="<?php echo $this->get_field_id('autoexpand'); ?>" name="<?php echo $this->get_field_name('autoexpand'); ?>" <?php echo empty($autoexpand) ? '' : 'checked'; ?>" value="true" />
 				</label>
 				<label for="<?php echo $this->get_field_id('url'); ?>" style="line-height:35px;display:block;">
 					<?php _e('Calendar URL 1:'); ?>
