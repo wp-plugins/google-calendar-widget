@@ -95,3 +95,6 @@ With
 
 = 1.2 =
 * Added "Expand Entries by Default" checkbox to widget settings to auto expand all the calendar entries.  If this is checked, the each calendar item will open as though they were clicked by default.
+
+= 1.3 =
+* Added error checking for errors that can occur when used offline (for test servers).

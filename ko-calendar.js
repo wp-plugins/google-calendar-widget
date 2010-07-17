@@ -447,18 +447,29 @@ var ko_calendar = function ()
 		calendars.push(calendarUrl2);
 		calendars.push(calendarUrl3);
 
-		google.setOnLoadCallback(function() { loadCalendar(titleId, outputId, maxResults, autoExpand, calendars); });
+		// google won't be defined if there was a problem loading the Google js library
+		if (typeof(google) != "undefined")
+		{
+			google.setOnLoadCallback(function() { loadCalendar(titleId, outputId, maxResults, calendars); });
+		}
 	}
 	
 	result.init = function()
 	{
-		// init the Google data JS client library with an error handler
-		google.gdata.client.init(handleGDError);
+		if (typeof(google) != "undefined")
+		{
+			// init the Google data JS client library with an error handler
+			google.gdata.client.init(handleGDError);
+		}
 	}
 	
 	return result;
 
+
 } ();
 
-google.load("gdata", "2.x");
-google.setOnLoadCallback(ko_calendar.init);
+if (typeof(google) != "undefined")
+{
+	google.load("gdata", "2.x");
+	google.setOnLoadCallback(ko_calendar.init);
+}
