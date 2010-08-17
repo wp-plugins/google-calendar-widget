@@ -450,7 +450,7 @@ var ko_calendar = function ()
 		// google won't be defined if there was a problem loading the Google js library
 		if (typeof(google) != "undefined")
 		{
-			google.setOnLoadCallback(function() { loadCalendar(titleId, outputId, maxResults, calendars); });
+			google.setOnLoadCallback(function() { loadCalendar(titleId, outputId, maxResults, autoExpand, calendars); });
 		}
 	}
 	
