@@ -37,11 +37,11 @@ function ko_calendar_load()
 			echo $before_widget;
 			echo $before_title . '<div class="ko-calendar-widget-title" id="' . $title_id . '">' . $title . '</div>' . $after_title;
 			echo '<div class="ko-calendar-widget-events" id="' . $event_id . '">';
-			echo '<div class="ko-calendar-widget-loading"><img class="ko-calendar-widget-image" src="' . KO_CALENDAR_URL . '/loading.gif"/></div>';
+			echo '<div class="ko-calendar-widget-loading"><img class="ko-calendar-widget-image" src="' . KO_CALENDAR_URL . '/loading.gif" alt="Loading..."/></div>';
 			echo '</div>';
 			echo $after_widget;
 			?>
-			<script type="text/javascript" defer="true">
+			<script type="text/javascript" defer="defer">
 				ko_calendar.loadCalendarDefered('<?php echo $title_id ?>', '<?php echo $event_id ?>', <?php echo $maxresults ?>, <?php echo empty($autoexpand) ? 'false' : 'true' ?>, '<?php echo $url ?>', '<?php echo $url2 ?>', '<?php echo $url3 ?>');
 			</script>
 			<?php
