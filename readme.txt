@@ -81,6 +81,33 @@ With
 
 	bodyDiv.innerHTML = entryDesc;
 
+= How do I insert this in a theme without a sidebar =
+
+You can insert the widget into a template directly, without adding it to a sidebar, by inserting php code directly into your theme.
+
+<?php
+the_widget("WP_Widget_KO_Calendar",
+	array(
+		'title' => 'Calendar Title',
+		'url' => 'http://www.google.com/calendar/feeds/yourcalendar@gmail.com/public/full',
+	),
+	array('before_widget' => '<div class="calendarwidget">',
+		'after_widget' => '</div>',
+		'before_title' => '<div class="calendartitle">',
+		'after_title' => '</div>'
+));
+?>
+
+You can configure it with the same options available in the widget, as the second parameter to the_widget.
+'title' will appear at the top of the calendar.
+'url' is the url of your Google Calendar (see the Installation instructions for more details)
+'url2', and 'url3' allow you to specify multiple calendars to be shown in the one view.
+'maxresults' restricts the number of events to show.  The default is 5.
+If 'autoexpand' is TRUE, the calendar will show the details of each event by default.  The default is FALSE.
+
+The third parameter lists the standard widget options.  See the wordpress Widget documentation for more details.
+They can each be blank (i.e. 'before_widget'=>'') or contain whatever formatting you desire to be inserted in the flow.
+
 == Screenshots ==
 
 1. The widget showing the upcoming Google developer calendar events on the sidebar of the default Wordpress theme.
