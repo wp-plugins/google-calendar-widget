@@ -115,6 +115,70 @@ var ko_calendar = function ()
 		return locationDiv;
 	}
 
+	function formatEventDetails(titleFormat, title, times)
+	{
+		// titleFormat contains the format string from the user.
+		// title is the title of the calendar event.
+		// times is an array of "When" objects form the calendar event.
+		//
+		// <TITLE> will be substituted with the event title.
+		// <STARTTIME> will become the start time (or "All Day" if it is an all day event).
+		// <ENDTIME> will become the end time (or blank if it is an all day event).
+
+		var startTimeString = "";
+		var endTimeString = "";
+
+		if (times.length > 0)
+		{
+			var startDateTime = times[0].getStartTime();
+			var endDateTime = times[0].getStartTime();
+		
+			if (startDateTime)
+			{
+				if (startDateTime.isDateOnly())
+				{
+					startTimeString = "All Day";
+				}
+				else
+				{
+					startTimeString = startDateTime.getDate().toString("h:mm tt");
+					if (endDateTime)
+					{
+						endTimeString = endDateTime.getDate().toString("h:mm tt");
+					}
+				}
+			}
+		}
+		
+		var part1 = titleFormat.replace(/TITLE/g, title);
+		var part2 = part1.replace(/STARTTIME/g, startTimeString);
+		var part3 = part2.replace(/ENDTIME/g, endTimeString);
+		
+		return part3;
+	}
+
+	function getStartDate(calendarEntry)
+	{
+		var result = null;
+		
+		if (!calendarEntry)
+		{
+			return null;
+		}
+		
+		var data = calendarEntry;
+		if (data != null)
+		{
+			var times = data.getTimes();
+			if (times.length > 0)
+			{
+				result = times[0].getStartTime().getDate();
+			}
+		}
+
+		return result;
+	}
+	
 	/**
 	 * Show or hide the calendar entry (as a <div> child of item) when the item is clicked.
 	 * Initially this will show a div containing the content text.
@@ -169,7 +233,7 @@ var ko_calendar = function ()
 	 *
 	 * @param {json} feedRoot is the root of the feed, containing all entries 
 	 */
-	function createListEvents(titleId, outputId, maxResults, autoExpand, googleService, urls)
+	function createListEvents(titleId, outputId, maxResults, autoExpand, googleService, urls, titleFormat)
 	{
 		function mergeFeeds(resultArray)
 		{
@@ -206,11 +270,11 @@ var ko_calendar = function ()
 						var times = data.getTimes();
 						if (times.length > 0)
 						{
-							var startDateTime = times[0].getStartTime().getDate();
-							if (firstStartTime == null || startDateTime < firstStartTime)
+							var startDate = times[0].getStartTime().getDate();
+							if (firstStartTime == null || startDate < firstStartTime)
 							{
-								//log( startDateTime + " from feed " + i + " is before " + firstStartTime + " from feed " + firstStartIndex);
-								firstStartTime = startDateTime;
+								//log( startDate + " from feed " + i + " is before " + firstStartTime + " from feed " + firstStartIndex);
+								firstStartTime = startDate;
 								firstStartIndex = i;
 							}
 						}
@@ -219,8 +283,33 @@ var ko_calendar = function ()
 				if (firstStartTime != null)
 				{
 					// Add the entry to the output and shift it off the input.
-					log("Pushing " + startDateTime);
-					output.push(entries[firstStartIndex].shift());
+					var uid = entries[firstStartIndex][0].getUid().getValue();
+					log("Pushing " + startDate + " " + uid);
+					var uniqueEntry = true;
+
+					// Remove duplicate events.  They are events with the same start time and the same Uid.
+					if (output.length > 0)
+					{
+						var lastOutput = output[output.length-1];
+						var lastStartDate = getStartDate(lastOutput);
+						var lastUid = lastOutput.getUid().getValue();
+
+						if ((lastStartDate.getTime() == startDate.getTime()) && (lastUid == uid))
+						{
+							// This is a duplicate.
+							log("Duplicate event");
+							uniqueEntry = false;
+						}
+					}
+
+					if (uniqueEntry)
+					{
+						output.push(entries[firstStartIndex].shift());
+					}
+					else
+					{
+						entries[firstStartIndex].shift();
+					}
 				}
 				else
 				{
@@ -300,8 +389,7 @@ var ko_calendar = function ()
 				}
 				else
 				*/
-				{
-
+				{				
 					// Add the title as the first thing in the list item
 					// Make it an anchor so that we can set an onclick handler and
 					// make it look like a clickable link
@@ -309,7 +397,9 @@ var ko_calendar = function ()
 					entryTitle.setAttribute('className','ko-calendar-entry-title');
 					entryTitle.setAttribute('class','ko-calendar-entry-title');
 					entryTitle.setAttribute('href', "javascript:;");
-					entryTitle.appendChild(document.createTextNode(title));
+
+					var titleString = formatEventDetails(titleFormat, title, entry.getTimes());
+					entryTitle.appendChild(document.createTextNode(titleString));
 
 					// Show and hide the entry text when the entryTitleDiv is clicked.
 					entryTitle.onclick = createClickHandler(li, entry);
@@ -425,22 +515,23 @@ var ko_calendar = function ()
 	 * @param {string} calendarUrl is the URL for a public calendar feed
 	 * @param {string} calendarUrl2 is the URL for a second public calendar feed
 	 * @param {number} maxResults is the maximum number of results to be written to the output element.
+	 * @param {string} titleFormat is a format string for the event details.
 	 */  
-	function loadCalendar(titleId, outputId, maxResults, autoExpand, calendars)
+	function loadCalendar(titleId, outputId, maxResults, autoExpand, calendars, titleFormat)
 	{
 		// Uncomment the following two lines for offline testing.
 		//ko_calendar_test.testCalendar();
 		//return;
 
 		var service = new google.gdata.calendar.CalendarService('google-calendar-widget');
-		var requestFunc = createListEvents(titleId, outputId, maxResults, autoExpand, service, calendars);
+		var requestFunc = createListEvents(titleId, outputId, maxResults, autoExpand, service, calendars, titleFormat);
 
 		// Calling the created callback with no parameters will start the process of downloading
 		// the set of calendars pushed in with calendar.
 		requestFunc();
 	}
 
-	result.loadCalendarDefered = function(titleId, outputId, maxResults, autoExpand, calendarUrl, calendarUrl2, calendarUrl3)
+	result.loadCalendarDefered = function(titleId, outputId, maxResults, autoExpand, calendarUrl, calendarUrl2, calendarUrl3, titleFormat)
 	{
 		var calendars = new Array();
 		calendars.push(calendarUrl);
@@ -450,7 +541,7 @@ var ko_calendar = function ()
 		// google won't be defined if there was a problem loading the Google js library
 		if (typeof(google) != "undefined")
 		{
-			google.setOnLoadCallback(function() { loadCalendar(titleId, outputId, maxResults, autoExpand, calendars); });
+			google.setOnLoadCallback(function() { loadCalendar(titleId, outputId, maxResults, autoExpand, calendars, titleFormat); });
 		}
 	}
 	
@@ -462,9 +553,8 @@ var ko_calendar = function ()
 			google.gdata.client.init(handleGDError);
 		}
 	}
-	
-	return result;
 
+	return result;
 
 } ();
 
