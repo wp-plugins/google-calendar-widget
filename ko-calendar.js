@@ -13,13 +13,13 @@ var ko_calendar = function ()
 	{
 		/* display the date/time */
 		var dateString = 'All Day Event';
-		var times = entry.getTimes();
-		if (times.length)
-		{
-			/* if the event has a date & time, override the default text */
-			var startTime = times[0].getStartTime();
-			var endTime = times[0].getEndTime();
 
+		/* if the event has a date & time, override the default text */
+		var startTime = getStartTime(entry);
+		var endTime = getEndTime(entry);
+
+		if (startTime && endTime)
+		{
 			var startJSDate = startTime.getDate();
 			var endJSDate = new Date(endTime.getDate());
 
@@ -115,41 +115,49 @@ var ko_calendar = function ()
 		return locationDiv;
 	}
 
-	function formatEventDetails(titleFormat, title, times)
+	function formatEventDetails(titleFormat, event)
 	{
 		// titleFormat contains the format string from the user.
-		// title is the title of the calendar event.
-		// times is an array of "When" objects form the calendar event.
+		// event is the calendar event.
 		//
-		// <TITLE> will be substituted with the event title.
-		// <STARTTIME> will become the start time (or "All Day" if it is an all day event).
-		// <ENDTIME> will become the end time (or blank if it is an all day event).
+		// [TITLE] will be substituted with the event title.
+		// [STARTTIME] will become the start time (or "All Day" if it is an all day event).
+		// [ENDTIME] will become the end time (or blank if it is an all day event).
+		//
+		// Any extra characters included within the [] will be inserted if the value exists.
+		// That is, [ENDTIME - ] will insert " - " after the end time, if and only if there is an end time.
+		//
+		// If an event is an all-day event, then [STARTTIME] will be replaced with "All Day" and
+		// no [ENDTIME] will defined.
+		//
+		// Examples
+		// "[STARTTIME] - [TITLE]"				becomes "6:00AM - Test Event" or "All Day - Test Event"
+		// "[STARTTIME] - [ENDTIME - ][TITLE]"	becomes "6:00AM - 9:00AM - Test Event" or "All Day - Test Event"
+		// "[STARTTIME][ - ENDTIME] : [TITLE]"	becomes "6:00AM - 9:00AM : Test Event" or "All Day : Test Event"
 
 		var startTimeString = "";
 		var endTimeString = "";
 
-		if (times.length > 0)
-		{
-			var startDateTime = times[0].getStartTime();
-			var endDateTime = times[0].getStartTime();
+		var title = event.getTitle().getText();
+		var startDateTime = getStartTime(event);
+		var endDateTime = getEndTime(event);
 		
-			if (startDateTime)
+		if (startDateTime)
+		{
+			if (startDateTime.isDateOnly())
 			{
-				if (startDateTime.isDateOnly())
+				startTimeString = "All Day";
+			}
+			else
+			{
+				startTimeString = startDateTime.getDate().toString("h:mm tt");
+				if (endDateTime)
 				{
-					startTimeString = "All Day";
-				}
-				else
-				{
-					startTimeString = startDateTime.getDate().toString("h:mm tt");
-					if (endDateTime)
-					{
-						endTimeString = endDateTime.getDate().toString("h:mm tt");
-					}
+					endTimeString = endDateTime.getDate().toString("h:mm tt");
 				}
 			}
 		}
-		
+
 		var part1 = titleFormat.replace(/TITLE/g, title);
 		var part2 = part1.replace(/STARTTIME/g, startTimeString);
 		var part3 = part2.replace(/ENDTIME/g, endTimeString);
@@ -157,28 +165,38 @@ var ko_calendar = function ()
 		return part3;
 	}
 
-	function getStartDate(calendarEntry)
+	function getStartTime(calendarEntry)
 	{
 		var result = null;
-		
-		if (!calendarEntry)
+
+		if (calendarEntry != null)
 		{
-			return null;
-		}
-		
-		var data = calendarEntry;
-		if (data != null)
-		{
-			var times = data.getTimes();
+			var times = calendarEntry.getTimes();
 			if (times.length > 0)
 			{
-				result = times[0].getStartTime().getDate();
+				result = times[0].getStartTime(); //.getDate();
 			}
 		}
 
 		return result;
 	}
 	
+	function getEndTime(calendarEntry)
+	{
+		var result = null;
+
+		if (calendarEntry != null)
+		{
+			var times = calendarEntry.getTimes();
+			if (times.length > 0)
+			{
+				result = times[0].getEndTime();
+			}
+		}
+
+		return result;
+	}
+
 	/**
 	 * Show or hide the calendar entry (as a <div> child of item) when the item is clicked.
 	 * Initially this will show a div containing the content text.
@@ -264,19 +282,15 @@ var ko_calendar = function ()
 				var firstStartIndex = null;
 				for (var i=0; i < entries.length; i++)
 				{
-					var data = entries[i][0];
-					if (data != null)
+					var startTime = getStartTime(entries[i][0]);
+					if (startTime != null)
 					{
-						var times = data.getTimes();
-						if (times.length > 0)
+						var startDate = startTime.getDate();
+						if (firstStartTime == null || startDate < firstStartTime)
 						{
-							var startDate = times[0].getStartTime().getDate();
-							if (firstStartTime == null || startDate < firstStartTime)
-							{
-								//log( startDate + " from feed " + i + " is before " + firstStartTime + " from feed " + firstStartIndex);
-								firstStartTime = startDate;
-								firstStartIndex = i;
-							}
+							//log( startDate + " from feed " + i + " is before " + firstStartTime + " from feed " + firstStartIndex);
+							firstStartTime = startDate;
+							firstStartIndex = i;
 						}
 					}
 				}
@@ -284,17 +298,17 @@ var ko_calendar = function ()
 				{
 					// Add the entry to the output and shift it off the input.
 					var uid = entries[firstStartIndex][0].getUid().getValue();
-					log("Pushing " + startDate + " " + uid);
+					log("Pushing " + firstStartTime + " " + uid);
 					var uniqueEntry = true;
 
 					// Remove duplicate events.  They are events with the same start time and the same Uid.
 					if (output.length > 0)
 					{
 						var lastOutput = output[output.length-1];
-						var lastStartDate = getStartDate(lastOutput);
+						var lastStartTime = getStartTime(lastOutput);
 						var lastUid = lastOutput.getUid().getValue();
 
-						if ((lastStartDate.getTime() == startDate.getTime()) && (lastUid == uid))
+						if ((lastStartTime.getDate().getTime() == firstStartTime.getTime()) && (lastUid == uid))
 						{
 							// This is a duplicate.
 							log("Duplicate event");
@@ -339,13 +353,8 @@ var ko_calendar = function ()
 			for (var i = 0; i < len; i++) {
 				var entry = entries[i];
 				var title = entry.getTitle().getText();
-				var startDateTime = null;
-				var startJSDate = null;
-				var times = entry.getTimes();
-				if (times.length > 0) {
-					startDateTime = times[0].getStartTime();
-					startJSDate = startDateTime.getDate();
-				}
+				var startDateTime = getStartTime(entry);
+				var startJSDate = startDateTime ? startDateTime.getDate() : null;
 				var entryLinkHref = null;
 				if (entry.getHtmlLink() != null) {
 					entryLinkHref = entry.getHtmlLink().getHref();
@@ -398,7 +407,7 @@ var ko_calendar = function ()
 					entryTitle.setAttribute('class','ko-calendar-entry-title');
 					entryTitle.setAttribute('href', "javascript:;");
 
-					var titleString = formatEventDetails(titleFormat, title, entry.getTimes());
+					var titleString = formatEventDetails(titleFormat, entry);
 					entryTitle.appendChild(document.createTextNode(titleString));
 
 					// Show and hide the entry text when the entryTitleDiv is clicked.
