@@ -33,6 +33,7 @@ For example:
 * Calendar URL 1: http://www.google.com/calendar/feeds/developer-calendar@google.com/public/full 
 * Calendar URL 2: http://www.google.com/calendar/feeds/insert your feed here/public/full 
 * Calendar URL 3: <blank>
+* Event Title Format: [STARTTIME -][TITLE]
 * Maximum Results: 6 
 
 == Frequently Asked Questions ==
@@ -103,10 +104,30 @@ You can configure it with the same options available in the widget, as the secon
 'url' is the url of your Google Calendar (see the Installation instructions for more details)
 'url2', and 'url3' allow you to specify multiple calendars to be shown in the one view.
 'maxresults' restricts the number of events to show.  The default is 5.
+'titleformat' is the format of the event titles.  The default is "STARTTIME - TITLE".
 If 'autoexpand' is TRUE, the calendar will show the details of each event by default.  The default is FALSE.
 
 The third parameter lists the standard widget options.  See the wordpress Widget documentation for more details.
 They can each be blank (i.e. 'before_widget'=>'') or contain whatever formatting you desire to be inserted in the flow.
+
+= How do I customize the event titles? =
+
+The "Event Title Format" option for each calendar allows you to format how you wish the calendar events to appear in the event list.
+The default format is "[STARTTIME - ][TITLE]" so, for example, an event that starts at 6:00pm would called "Birthday Party" would appear as "6:00PM - Birthday Party".
+
+[TITLE] will be substituted with the event title.
+[STARTTIME] will become the start time (or "All Day" if it is an all day event).
+[ENDTIME] will become the end time (or blank if it is an all day event).
+
+Any extra characters included within the [] will be inserted if the value exists.
+That is, [ENDTIME - ] will insert " - " after the end time, if and only if there is an end time.
+
+If an event is an all-day event, then [STARTTIME] will be replaced with "All Day" and no [ENDTIME] will defined.
+
+Examples
+	"[STARTTIME] - [TITLE]"				becomes "6:00AM - Test Event" or "All Day - Test Event"
+	"[STARTTIME] - [ENDTIME - ][TITLE]"	becomes "6:00AM - 9:00AM - Test Event" or "All Day - Test Event"
+	"[STARTTIME][ - ENDTIME] : [TITLE]"	becomes "6:00AM - 9:00AM : Test Event" or "All Day : Test Event"
 
 == Screenshots ==
 
@@ -124,4 +145,7 @@ They can each be blank (i.e. 'before_widget'=>'') or contain whatever formatting
 * Added "Expand Entries by Default" checkbox to widget settings to auto expand all the calendar entries.  If this is checked, the each calendar item will open as though they were clicked by default.
 
 = 1.3 =
+* Remove duplicate events when showing multiple calendars that have been invited to the same event.  If you create an event in calendar A and invite calendar B as a guest, then load them as "url" and "url2", the event should only appear once.
+* Added "Event Title Format" option to specify a format string to customize event titles (with or without the time).
 * Added error checking for errors that can occur when used offline (for test servers).
+* Changed the layout of the widget settings to increase the size of the text boxes.

@@ -135,8 +135,8 @@ var ko_calendar = function ()
 		// "[STARTTIME] - [ENDTIME - ][TITLE]"	becomes "6:00AM - 9:00AM - Test Event" or "All Day - Test Event"
 		// "[STARTTIME][ - ENDTIME] : [TITLE]"	becomes "6:00AM - 9:00AM : Test Event" or "All Day : Test Event"
 
-		var startTimeString = "";
-		var endTimeString = "";
+		var startTimeString = null;
+		var endTimeString = null;
 
 		var title = event.getTitle().getText();
 		var startDateTime = getStartTime(event);
@@ -158,11 +158,26 @@ var ko_calendar = function ()
 			}
 		}
 
-		var part1 = titleFormat.replace(/TITLE/g, title);
-		var part2 = part1.replace(/STARTTIME/g, startTimeString);
-		var part3 = part2.replace(/ENDTIME/g, endTimeString);
+		function replaceTITLE(strMatchingString, strGroup1, strGroup2)
+		{
+			return title ? strGroup1 + title + strGroup2 : "";
+		}
+
+		function replaceSTARTTIME(strMatchingString, strGroup1, strGroup2)
+		{
+			return startTimeString ? strGroup1 + startTimeString + strGroup2 : "";
+		}
+
+		function replaceENDTIME(strMatchingString, strGroup1, strGroup2)
+		{
+			return endTimeString ? strGroup1 + endTimeString + strGroup2 : "";
+		}
 		
-		return part3;
+		var output = titleFormat.replace(/\[([^\]]*)TITLE([^\]]*)\]/g, replaceTITLE);
+		output = output.replace(/\[([^\]]*)STARTTIME([^\]]*)\]/g, replaceSTARTTIME);
+		output = output.replace(/\[([^\]]*)ENDTIME([^\]]*)\]/g, replaceENDTIME);
+		
+		return output;
 	}
 
 	function getStartTime(calendarEntry)

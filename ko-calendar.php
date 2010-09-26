@@ -30,7 +30,7 @@ function ko_calendar_load()
 			$url3 = empty($instance['url3']) ? '' : $instance['url3'];
 			$maxresults = empty($instance['maxresults']) ? '5' : $instance['maxresults'];
 			$autoexpand = empty($instance['autoexpand']) ? FALSE : $instance['autoexpand'];
-			$titleformat = empty($instance['titleformat']) ? 'STARTTIME - TITLE' : $instance['titleformat'];
+			$titleformat = empty($instance['titleformat']) ? '[STARTTIME - ][TITLE]' : $instance['titleformat'];
 
 			$title_id = $this->get_field_id('widget_title');
 			$event_id = $this->get_field_id('widget_events');
@@ -66,7 +66,7 @@ function ko_calendar_load()
 		
 		function form($instance)
 		{
-			$defaults = array( 'title' => '', 'url' => '', 'url2' => '', 'url3' => '', 'maxresults' => 5, 'autoexpand' => FALSE, 'titleformat' => 'STARTTIME - TITLE');
+			$defaults = array( 'title' => '', 'url' => '', 'url2' => '', 'url3' => '', 'maxresults' => 5, 'autoexpand' => FALSE, 'titleformat' => '[STARTTIME - ][TITLE]');
 			$instance = wp_parse_args( (array) $instance, $defaults );
 			$title = esc_attr($instance['title']);
 			$url = esc_url($instance['url']);
@@ -78,35 +78,43 @@ function ko_calendar_load()
 
 			?>
 				<div>
-				<label for="<?php echo $this->get_field_id('title'); ?>" style="line-height:35px;display:block;">
-					<?php _e('Calendar Title:'); ?>
-					<input type="text" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" value="<?php echo $title; ?>" />
-				</label>
-				<label for="<?php echo $this->get_field_id('maxresults'); ?>" style="line-height:35px;display:block;">
-					<?php _e('Maximum Results:'); ?>
+				<table width="100%"><tr><td>
+					<label for="<?php echo $this->get_field_id('title'); ?>" style="line-height:35px;display:block;">
+						Calendar&nbsp;Title:
+					</label></td><td width="100%" style="width:100%">
+					<input type="text" style="width:100%" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" value="<?php echo $title; ?>" />
+				</td></tr></table><table width="100%"><tr><td>
+					<label for="<?php echo $this->get_field_id('maxresults'); ?>" style="line-height:35px;display:block;">
+						Maximum&nbsp;Results:
+					</label></td><td width="100%" style="width:100%">
 					<input type="text" id="<?php echo $this->get_field_id('maxresults'); ?>" name="<?php echo $this->get_field_name('maxresults'); ?>" value="<?php echo $maxresults; ?>" />
-				</label>
-				<label for="<?php echo $this->get_field_id('autoexpand'); ?>" style="line-height:35px;display:block;">
-					<?php _e('Expand Entries by Default:'); ?>
-					<input type="checkbox" id="<?php echo $this->get_field_id('autoexpand'); ?>" name="<?php echo $this->get_field_name('autoexpand'); ?>" <?php echo empty($autoexpand) ? '' : 'checked'; ?>" value="true" />
-				</label>
-				<label for="<?php echo $this->get_field_id('url'); ?>" style="line-height:35px;display:block;">
-					<?php _e('Calendar URL 1:'); ?>
-					<input type="text" id="<?php echo $this->get_field_id('url'); ?>" name="<?php echo $this->get_field_name('url'); ?>" value="<?php echo $url; ?>" />
-				</label>
-				<label for="<?php echo $this->get_field_id('url2'); ?>" style="line-height:35px;display:block;">
-					<?php _e('Calendar URL 2 (Optional):'); ?>
-					<input type="text" id="<?php echo $this->get_field_id('url2'); ?>" name="<?php echo $this->get_field_name('url2'); ?>" value="<?php echo $url2; ?>" />
-				</label>
-				<label for="<?php echo $this->get_field_id('url3'); ?>" style="line-height:35px;display:block;">
-					<?php _e('Calendar URL 3 (Optional):'); ?>
-					<input type="text" id="<?php echo $this->get_field_id('url3'); ?>" name="<?php echo $this->get_field_name('url3'); ?>" value="<?php echo $url3; ?>" />
-				</label>
+				</td></tr></table><table width="100%"><tr><td>
+					<label for="<?php echo $this->get_field_id('autoexpand'); ?>" style="line-height:35px;display:block;">
+						Expand&nbsp;Entries&nbsp;by&nbsp;Default:
+					</label></td><td width="100%" style="width:100%">
+					<input type="checkbox" id="<?php echo $this->get_field_id('autoexpand'); ?>" name="<?php echo $this->get_field_name('autoexpand'); ?>" <?php echo empty($autoexpand) ? '' : 'checked'; ?> value="true" />
+				</td></tr></table><table width="100%"><tr><td>
+					<label for="<?php echo $this->get_field_id('url'); ?>" style="line-height:35px;display:block;">
+						Calendar&nbsp;URL&nbsp;1:
+					</label></td><td width="100%" style="width:100%">
+					<input type="text" style="width:100%" id="<?php echo $this->get_field_id('url'); ?>" name="<?php echo $this->get_field_name('url'); ?>" value="<?php echo $url; ?>" />
+				</td></tr></table><table width="100%"><tr><td>
+					<label for="<?php echo $this->get_field_id('url2'); ?>" style="line-height:35px;display:block;">
+						Calendar&nbsp;URL&nbsp;2&nbsp;(Optional):
+					</label></td><td width="100%" style="width:100%">
+					<input type="text" style="width:100%" id="<?php echo $this->get_field_id('url2'); ?>" name="<?php echo $this->get_field_name('url2'); ?>" value="<?php echo $url2; ?>" />
+				</td></tr></table><table width="100%"><tr><td>
+					<label for="<?php echo $this->get_field_id('url3'); ?>" style="line-height:35px;display:block;">
+						Calendar&nbsp;URL&nbsp;3&nbsp;(Optional):
+					</label></td><td width="100%" style="width:100%">
+					<input type="text" style="width:100%" id="<?php echo $this->get_field_id('url3'); ?>" name="<?php echo $this->get_field_name('url3'); ?>" value="<?php echo $url3; ?>" />
+				</td></tr></table><table width="100%"><tr><td>
+					<label for="<?php echo $this->get_field_id('titleformat'); ?>" style="line-height:35px;display:block;">
+						Event&nbsp;Title&nbsp;Format:
+					</label></td><td width="100%" style="width:100%">
+					<input type="text" style="width:100%" id="<?php echo $this->get_field_id('titleformat'); ?>" name="<?php echo $this->get_field_name('titleformat'); ?>" value="<?php echo $titleformat; ?>" />
+				</td></tr></table>
 				<input type="hidden" name="<?php echo $this->get_field_name('submit'); ?>" id="<?php echo $this->get_field_id('submit'); ?>" value="1" />
-				<label for="<?php echo $this->get_field_id('titleformat'); ?>" style="line-height:35px;display:block;">
-					<?php _e('Event Title Format:'); ?>
-					<input type="text" id="<?php echo $this->get_field_id('titleformat'); ?>" name="<?php echo $this->get_field_name('titleformat'); ?>" value="<?php echo $titleformat; ?>" />
-				</label>
 				</div>
 			<?php
 		}
