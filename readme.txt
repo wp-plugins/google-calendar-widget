@@ -115,9 +115,9 @@ They can each be blank (i.e. 'before_widget'=>'') or contain whatever formatting
 The "Event Title Format" option for each calendar allows you to format how you wish the calendar events to appear in the event list.
 The default format is "[STARTTIME - ][TITLE]" so, for example, an event that starts at 6:00pm would called "Birthday Party" would appear as "6:00PM - Birthday Party".
 
- [TITLE] will be substituted with the event title.
- [STARTTIME] will become the start time (or "All Day" if it is an all day event).
- [ENDTIME] will become the end time (or blank if it is an all day event).
+*	[TITLE] will be substituted with the event title.
+*	[STARTTIME] will become the start time (or "All Day" if it is an all day event).
+*	[ENDTIME] will become the end time (or blank if it is an all day event).
 
 Any extra characters included within the [] will be inserted if the value exists.
 That is, [ENDTIME - ] will insert " - " after the end time, if and only if there is an end time.
@@ -125,9 +125,9 @@ That is, [ENDTIME - ] will insert " - " after the end time, if and only if there
 If an event is an all-day event, then [STARTTIME] will be replaced with "All Day" and no [ENDTIME] will defined.
 
 Examples
-* "[STARTTIME] - [TITLE]"				becomes "6:00AM - Test Event" or "All Day - Test Event"
-* "[STARTTIME] - [ENDTIME - ][TITLE]"	becomes "6:00AM - 9:00AM - Test Event" or "All Day - Test Event"
-* "[STARTTIME][ - ENDTIME] : [TITLE]"	becomes "6:00AM - 9:00AM : Test Event" or "All Day : Test Event"
+*	"[STARTTIME] - [TITLE]"				becomes "6:00AM - Test Event" or "All Day - Test Event"
+*	"[STARTTIME] - [ENDTIME - ][TITLE]"	becomes "6:00AM - 9:00AM - Test Event" or "All Day - Test Event"
+*	"[STARTTIME][ - ENDTIME] : [TITLE]"	becomes "6:00AM - 9:00AM : Test Event" or "All Day : Test Event"
 
 == Screenshots ==
 
