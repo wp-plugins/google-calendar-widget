@@ -100,12 +100,13 @@ You can insert the widget into a template directly, without adding it to a sideb
 	?>
 
 You can configure it with the same options available in the widget, as the second parameter to the_widget.
-'title' will appear at the top of the calendar.
-'url' is the url of your Google Calendar (see the Installation instructions for more details)
-'url2', and 'url3' allow you to specify multiple calendars to be shown in the one view.
-'maxresults' restricts the number of events to show.  The default is 5.
-'titleformat' is the format of the event titles.  The default is "STARTTIME - TITLE".
-If 'autoexpand' is TRUE, the calendar will show the details of each event by default.  The default is FALSE.
+
+* 'title' will appear at the top of the calendar.
+* 'url' is the url of your Google Calendar (see the Installation instructions for more details)
+* 'url2', and 'url3' allow you to specify multiple calendars to be shown in the one view.
+* 'maxresults' restricts the number of events to show.  The default is 5.
+* 'titleformat' is the format of the event titles.  The default is "STARTTIME - TITLE".
+* If 'autoexpand' is TRUE, the calendar will show the details of each event by default.  The default is FALSE.
 
 The third parameter lists the standard widget options.  See the wordpress Widget documentation for more details.
 They can each be blank (i.e. 'before_widget'=>'') or contain whatever formatting you desire to be inserted in the flow.
