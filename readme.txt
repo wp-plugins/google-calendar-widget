@@ -125,6 +125,7 @@ That is, [ENDTIME - ] will insert " - " after the end time, if and only if there
 If an event is an all-day event, then [STARTTIME] will be replaced with "All Day" and no [ENDTIME] will defined.
 
 Examples
+
 *	"[STARTTIME] - [TITLE]"				becomes "6:00AM - Test Event" or "All Day - Test Event"
 *	"[STARTTIME] - [ENDTIME - ][TITLE]"	becomes "6:00AM - 9:00AM - Test Event" or "All Day - Test Event"
 *	"[STARTTIME][ - ENDTIME] : [TITLE]"	becomes "6:00AM - 9:00AM : Test Event" or "All Day : Test Event"
