@@ -354,9 +354,11 @@ var ko_calendar = function ()
 			// var entries = feedRoot.feed.getEntries();
 			var entries = feedRoot;
 			var eventDiv = document.getElementById(outputId);
-			if (eventDiv.childNodes.length > 0) {
+	
+			// Remove all the children of this node (should just be the loading gif)
+			while (eventDiv.childNodes.length > 0) {
 				eventDiv.removeChild(eventDiv.childNodes[0]);
-			}	  
+			}
 
 			/* set the ko-calendar-title div with the name of the calendar */
 			//document.getElementById(titleId).innerHTML = feedRoot.feed.title.$t;
