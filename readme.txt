@@ -152,5 +152,5 @@ Examples
 * Added error checking for errors that can occur when used offline (for test servers).
 * Changed the layout of the widget settings to increase the size of the text boxes.
 
-= 1.4 =
+= 1.3.1 =
 * Fixed problem where spaces around the loading GIF caused it to not stop when the calendar loads.
