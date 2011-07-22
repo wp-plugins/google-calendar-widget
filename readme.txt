@@ -131,6 +131,13 @@ Examples
 *	"[STARTTIME] - [ENDTIME - ][TITLE]"	becomes "6:00AM - 9:00AM - Test Event" or "All Day - Test Event"
 *	"[STARTTIME][ - ENDTIME] : [TITLE]"	becomes "6:00AM - 9:00AM : Test Event" or "All Day : Test Event"
 
+= Can I use this code outside of Wordpress in an HTML page? =
+
+Yes!
+
+I have included an example with the plugin in "examples/stand_along.html" that shows an example using the plugin code.
+Each element is tagged so it should be very flexible for styling; see the existing stylesheet for examples.
+
 == Screenshots ==
 
 1. The widget showing the upcoming Google developer calendar events on the sidebar of the default Wordpress theme.
