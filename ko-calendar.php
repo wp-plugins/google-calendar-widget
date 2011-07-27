@@ -3,7 +3,7 @@
 Plugin Name: Google Calendar Widget
 Plugin URI: http://notions.okuda.ca/wordpress-plugins/google-calendar-widget/
 Description: This plugin adds a sidebar widget containing an agenda from a Google Calendar.  It is based on the Google Calendar samples and inspired by wpng-calendar.  It is smaller and simpler than wpng-calendar and allows for multiple widgets to each show their own agenda.
-Version: 1.3.1
+Version: 1.3.2
 Author: Kaz Okuda
 Author URI: http://notions.okuda.ca
 */
@@ -127,12 +127,15 @@ function ko_calendar_load()
 
 	function ko_calendar_init()
 	{
-		// I believe that the google apikey is no longer needed
-		wp_enqueue_script('google', 'http://www.google.com/jsapi', false, 1);
-		wp_enqueue_script('date-js', KO_CALENDAR_URL . '/date.js', null, 'alpha-1');
-		wp_enqueue_script('wiky-js', KO_CALENDAR_URL . '/wiky.js', null, '1.0');
-		//wp_enqueue_script('ko-calendar-test', KO_CALENDAR_URL . '/ko-calendar-test.js', array('date-js', 'google'));
-		wp_enqueue_script('ko-calendar', KO_CALENDAR_URL . '/ko-calendar.js', array('date-js', 'google'));
+		if ( !is_admin() )
+		{
+			// I believe that the google apikey is no longer needed
+			wp_enqueue_script('google', 'http://www.google.com/jsapi', false, NULL);
+			wp_enqueue_script('date-js', KO_CALENDAR_URL . '/date.js', null, 'alpha-1');
+			wp_enqueue_script('wiky-js', KO_CALENDAR_URL . '/wiky.js', null, '1.0');
+			//wp_enqueue_script('ko-calendar-test', KO_CALENDAR_URL . '/ko-calendar-test.js', array('date-js', 'google'));
+			wp_enqueue_script('ko-calendar', KO_CALENDAR_URL . '/ko-calendar.js', array('date-js', 'google'));
+		}
 	}
 
 	function ko_calendar_register_widget()
