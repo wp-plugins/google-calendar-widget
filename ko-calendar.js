@@ -560,7 +560,7 @@ var ko_calendar = function ()
 		//ko_calendar_test.testCalendar();
 		//return;
 
-		gapi.client.setApiKey('AIzaSyAtVxkAGtYF9jIjDoKaj_GvH2bWMKB7pjo');
+		gapi.client.setApiKey('YOUR API KEY HERE');
 		gapi.client.load("calendar", "v3").then(function(){
 
 			var requestFunc = createListEvents(titleId, outputId, maxResults, autoExpand, gapi.client.calendar, calendars, titleFormat);
