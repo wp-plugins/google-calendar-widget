@@ -21,7 +21,7 @@ var ko_calendar = function ()
 		if (startTime && endTime)
 		{
 			var startJSDate = startTime.getDate();
-			var endJSDate = new Date(endTime.getDate());
+			var endJSDate = endTime.getDate();
 
 			// If the start and end are dates (full day event)
 			// then the end day is after the last day of the event (midnight that morning)
@@ -104,7 +104,7 @@ var ko_calendar = function ()
 	function buildLocation(entry)
 	{
 		var locationDiv = document.createElement('div');
-		var locationString = entry.getLocations()[0].getValueString();
+		var locationString = entry.location;
 		if (locationString != null)
 		{
 			locationDiv.appendChild(document.createTextNode(locationString));
@@ -138,7 +138,7 @@ var ko_calendar = function ()
 		var startTimeString = null;
 		var endTimeString = null;
 
-		var title = event.getTitle().getText();
+		var title = event.summary;
 		var startDateTime = getStartTime(event);
 		var endDateTime = getEndTime(event);
 		
@@ -180,17 +180,37 @@ var ko_calendar = function ()
 		return output;
 	}
 
+	function getTime(calendarTime)
+	{
+		result = {
+			"getDate" : function()
+			{
+				if (calendarTime.dateTime)
+				{
+					return new Date(calendarTime.dateTime);
+				}
+				else if (calendarTime.date)
+				{
+					return new Date(calendarTime.date);
+				}
+				return null;
+			},
+			"isDateOnly" : function()
+			{
+				return calendarTime.data != null
+			}
+		}
+		
+		return result;
+	}
+	
 	function getStartTime(calendarEntry)
 	{
 		var result = null;
 
 		if (calendarEntry != null)
 		{
-			var times = calendarEntry.getTimes();
-			if (times.length > 0)
-			{
-				result = times[0].getStartTime(); //.getDate();
-			}
+			result = getTime(calendarEntry.start);
 		}
 
 		return result;
@@ -202,11 +222,7 @@ var ko_calendar = function ()
 
 		if (calendarEntry != null)
 		{
-			var times = calendarEntry.getTimes();
-			if (times.length > 0)
-			{
-				result = times[0].getEndTime();
-			}
+			result = getTime(calendarEntry.end);
 		}
 
 		return result;
@@ -223,7 +239,7 @@ var ko_calendar = function ()
 	 */
 	function createClickHandler(item, entry)
 	{
-		var entryDesc = entry.getContent().getText();
+		var entryDesc = entry.description;
 		if (entryDesc == null)
 		{
 			return function() {}
@@ -280,8 +296,8 @@ var ko_calendar = function ()
 			{
 				if (resultArray[i])
 				{
-					log("Feed " + i + " has " + resultArray[i].feed.getEntries().length + " entries");
-					entries.push(resultArray[i].feed.getEntries());
+					log("Feed " + i + " has " + resultArray[i].items.length + " entries");
+					entries.push(resultArray[i].items);
 				}
 			}
 			
@@ -312,7 +328,7 @@ var ko_calendar = function ()
 				if (firstStartTime != null)
 				{
 					// Add the entry to the output and shift it off the input.
-					var uid = entries[firstStartIndex][0].getUid().getValue();
+					var uid = entries[firstStartIndex][0].id;
 					log("Pushing " + firstStartTime + " " + uid);
 					var uniqueEntry = true;
 
@@ -321,7 +337,7 @@ var ko_calendar = function ()
 					{
 						var lastOutput = output[output.length-1];
 						var lastStartTime = getStartTime(lastOutput);
-						var lastUid = lastOutput.getUid().getValue();
+						var lastUid = lastOutput.id;
 
 						if ((lastStartTime.getDate().getTime() == firstStartTime.getTime()) && (lastUid == uid))
 						{
@@ -369,12 +385,12 @@ var ko_calendar = function ()
 			var len = entries.length;
 			for (var i = 0; i < len; i++) {
 				var entry = entries[i];
-				var title = entry.getTitle().getText();
+				var title = entry.summary;
 				var startDateTime = getStartTime(entry);
 				var startJSDate = startDateTime ? startDateTime.getDate() : null;
 				var entryLinkHref = null;
-				if (entry.getHtmlLink() != null) {
-					entryLinkHref = entry.getHtmlLink().getHref();
+				if (entry.htmlLink != null) {
+					entryLinkHref = entry.htmlLink;
 				}
 				dateString = startJSDate.toString('MMM dd');
 
@@ -471,27 +487,22 @@ var ko_calendar = function ()
 			
 			if (url != undefined)
 			{
-				var query = new google.gdata.calendar.CalendarEventQuery(url);
-				query.setOrderBy('starttime');
-				query.setSortOrder('ascending');
-				query.setFutureEvents(true);
-				query.setSingleEvents(true);
-				query.setMaxResults(maxResults);
-				googleService.getEventsFeed(query, callback, handleGDError);
+				var timeMin = new Date().toISOString();
+				var params = {
+					'maxResults': maxResults, 
+					'calendarId': url,
+					'singleEvents':true,
+					'orderBy':'startTime',
+					'timeMin': timeMin
+				};
+
+				googleService.events.list(params)
+				.then(function(resp){
+					callback(resp.result)
+				});
 			}
 			else
-			{
-				// We are done.
-				// Merge the events in sQueries and apply them.				
-				// For now we just insert them individually.
-				// for (var i=0; i < sQueries.length; i++)
-				// {
-					// if (sQueries[i])
-					// {
-						// processFinalFeed(sQueries[i]);
-					// }
-				// }
-				
+			{				
 				var finalFeed = mergeFeeds(sQueries);
 				processFinalFeed(finalFeed);
 			}
@@ -549,14 +560,57 @@ var ko_calendar = function ()
 		//ko_calendar_test.testCalendar();
 		//return;
 
-		var service = new google.gdata.calendar.CalendarService('google-calendar-widget');
-		var requestFunc = createListEvents(titleId, outputId, maxResults, autoExpand, service, calendars, titleFormat);
+		gapi.client.setApiKey('AIzaSyAtVxkAGtYF9jIjDoKaj_GvH2bWMKB7pjo');
+		gapi.client.load("calendar", "v3").then(function(){
 
-		// Calling the created callback with no parameters will start the process of downloading
-		// the set of calendars pushed in with calendar.
-		requestFunc();
+			var requestFunc = createListEvents(titleId, outputId, maxResults, autoExpand, gapi.client.calendar, calendars, titleFormat);
+
+			// Calling the created callback with no parameters will start the process of downloading
+			// the set of calendars pushed in with calendar.
+			requestFunc();
+		});
+
 	}
 
+	
+	/**
+	 * addInitCallbacks + runInitCallbacks
+	 * 
+	 * These two functions are designed to handle unknown initialization order and time.
+	 * Any function added with addInitCallbacks will be called when runInitCallbacks
+	 * is called or immediately, if runInitCallbacks has already been called.
+	 *
+	 * This is so that we can safely schedule functions to be called from anywhere
+	 * and be sure they will get executed at the right time.
+	 */  
+	var callbacks = []	
+	function addInitCallback(func)
+	{
+		// If we are still waiting for the system to be initialized, then queue this for later.
+		// Otherwise just run it.
+		if (callbacks != null)
+		{
+			callbacks.push(func);
+		}
+		else
+		{
+			func();
+		}
+	}
+	
+	function runInitCallbacks()
+	{
+		// Run all the outstanding callbacks and then clear the array to stop new ones.
+		if (callbacks != null)
+		{
+			for (var i=0; i < callbacks.length; i++)
+			{
+				callbacks[i]();
+			}
+			callbacks = null;
+		}
+	}
+	
 	result.loadCalendarDefered = function(titleId, outputId, maxResults, autoExpand, calendarUrl, calendarUrl2, calendarUrl3, titleFormat)
 	{
 		var calendars = new Array();
@@ -564,28 +618,24 @@ var ko_calendar = function ()
 		calendars.push(calendarUrl2);
 		calendars.push(calendarUrl3);
 
-		// google won't be defined if there was a problem loading the Google js library
-		if (typeof(google) != "undefined")
-		{
-			google.setOnLoadCallback(function() { loadCalendar(titleId, outputId, maxResults, autoExpand, calendars, titleFormat); });
-		}
+		addInitCallback(function(){loadCalendar(titleId, outputId, maxResults, autoExpand, calendars, titleFormat)});
 	}
-	
+
+	// Call this when the Google Client API is ready to use.
 	result.init = function()
 	{
-		if (typeof(google) != "undefined")
-		{
-			// init the Google data JS client library with an error handler
-			google.gdata.client.init(handleGDError);
-		}
+		// It is now safe to run all the calendar loads
+		runInitCallbacks();
 	}
 
 	return result;
 
 } ();
 
-if (typeof(google) != "undefined")
+// This should be used as the callback function in the google client.js query parameters.
+// If it cannot be then ko_calendar.init() should be called from within the real one or after it is safe to use the API.
+function ko_calendar_google_init()
 {
-	google.load("gdata", "2.x");
-	google.setOnLoadCallback(ko_calendar.init);
+	// The Google Client API is ready to be used.
+	ko_calendar.init();
 }

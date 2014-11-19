@@ -12,9 +12,9 @@ This plugin installs a sidebar widget that can show the upcoming events from a G
 
 This plugin installs a widget for showing a Google Calendar agenda on the sidebar.
 Once installed it adds a sidebar widget called 'Google Calendar' that may be dragged into your sidebar.
-Each widget can be configured with a URL of the calendar feed, a title, and the number of agenda items to show.
+Each widget can be configured with a ID of the calendar feed, a title, and the number of agenda items to show.
 
-The calendar feed is the URL you get when clicking on the XML icon next to 'Calendar Address:' in the Google Calendar settings. [See the full instructions here](http://www.google.com/support/calendar/bin/answer.py?hl=en&answer=37103).
+The calendar feed ID is the ID next to 'Calendar ID:' in the Google Calendar settings.
 
 Multiple widgets can be used on the same page and each one can reference a different feed.
 
@@ -25,14 +25,14 @@ See also [http://notions.okuda.ca/wordpress-plugins/google-calendar-widget/](htt
 1. Upload all the files to the `/wp-content/plugins/google-calendar-widget` directory
 1. Activate the plugin through the 'Plugins' menu in WordPress
 1. Drag the 'Google Calendar' widget to your sidebar
-1. Fill out the settings for each instance in your sidebar.  You can ge the calendar URL from your Google calendar settings, just be sure to change the "/basic" to "/full".
+1. Fill out the settings for each instance in your sidebar.  You can ge the calendar ID from your Google calendar settings.
 
 For example:
 
 * Calendar Title : Google Developer Calendar 
-* Calendar URL 1: http://www.google.com/calendar/feeds/developer-calendar@google.com/public/full 
-* Calendar URL 2: http://www.google.com/calendar/feeds/insert your feed here/public/full 
-* Calendar URL 3: <blank>
+* Calendar ID 1: developer-calendar@google.com
+* Calendar ID 2: insert.your@id.here
+* Calendar ID 3: <blank>
 * Event Title Format: [STARTTIME -][TITLE]
 * Maximum Results: 6 
 
@@ -90,7 +90,7 @@ You can insert the widget into a template directly, without adding it to a sideb
 	the_widget("WP_Widget_KO_Calendar",
 		array(
 			'title' => 'Calendar Title',
-			'url' => 'http://www.google.com/calendar/feeds/yourcalendar@gmail.com/public/full',
+			'url' => 'yourcalendar@gmail.com',
 		),
 		array('before_widget' => '<div class="calendarwidget">',
 			'after_widget' => '</div>',
@@ -102,7 +102,7 @@ You can insert the widget into a template directly, without adding it to a sideb
 You can configure it with the same options available in the widget, as the second parameter to the_widget.
 
 * 'title' will appear at the top of the calendar.
-* 'url' is the url of your Google Calendar (see the Installation instructions for more details)
+* 'url' is the id of your Google Calendar (see the Installation instructions for more details)
 * 'url2', and 'url3' allow you to specify multiple calendars to be shown in the one view.
 * 'maxresults' restricts the number of events to show.  The default is 5.
 * 'titleformat' is the format of the event titles.  The default is "STARTTIME - TITLE".
@@ -166,3 +166,8 @@ Each element is tagged so it should be flexible for styling; see the existing st
 * Optimizations:
 ** Removed the version number from the Google jsapi so as to allow for more cache hits with other users.
 ** Removed the script includes from the admin interface.
+
+= 1.4.0 =
+* Upgraded to Google Calendar API v3
+* Replaced calendar "URL" with calendar "ID"
+* Added Setting for Google API Key.  It must be retreived for each web site.
