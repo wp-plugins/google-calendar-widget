@@ -152,8 +152,7 @@ Yes!
 
 I have included an example with the plugin in "examples/stand_alone.html" that shows an example using the plugin code.
 Each element is tagged so it should be flexible for styling; see the existing stylesheet for examples.
-
-NOTE: After the V3 API upgrade this may not work correctly.
+You must replace the text 'YOUR API KEY HERE' with your Google API Key
 
 == Screenshots ==
 
