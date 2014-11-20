@@ -187,3 +187,10 @@ You must replace the text 'YOUR API KEY HERE' with your Google API Key
 * Upgraded to Google Calendar API v3
 * Replaced calendar "URL" with calendar "ID"
 * Added Setting for Google API Key.  Each site must use a unique key.
+
+== Upgrade Notice ==
+
+= 1.4.0 =
+This is a required upgrade to the Google Calendar API V3.  Versions prior to this stopped working November 17, 2014.
+You must replace your Google Calendar URLs with just the calendar ID (for example "1234@google.com").
+You must also get a Google Api Key and save it in the new plugin settings page.
