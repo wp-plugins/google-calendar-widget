@@ -180,8 +180,8 @@ You must replace the text 'YOUR API KEY HERE' with your Google API Key
 
 = 1.3.2 =
 * Optimizations:
-** Removed the version number from the Google jsapi so as to allow for more cache hits with other users.
-** Removed the script includes from the admin interface.
+* Removed the version number from the Google jsapi so as to allow for more cache hits with other users.
+* Removed the script includes from the admin interface.
 
 = 1.4.0 =
 * Upgraded to Google Calendar API v3
