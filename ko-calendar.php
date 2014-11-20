@@ -41,9 +41,13 @@ function ko_calendar_load()
 			echo '<div class="ko-calendar-widget-loading"><img class="ko-calendar-widget-image" src="' . KO_CALENDAR_URL . '/loading.gif" alt="Loading..."/></div>';
 			echo '</div>';
 			echo $after_widget;
+			
+			$settings = (array)get_option('ko_calendar_settings');
+			$apikey = esc_attr($settings['apikey']);
+
 			?>
 			<script type="text/javascript" defer="defer">
-				ko_calendar.loadCalendarDefered('<?php echo $title_id ?>', '<?php echo $event_id ?>', <?php echo $maxresults ?>, <?php echo empty($autoexpand) ? 'false' : 'true' ?>, '<?php echo $url ?>', '<?php echo $url2 ?>', '<?php echo $url3 ?>', '<?php echo $titleformat ?>');
+				ko_calendar.loadCalendarDefered('<?php echo $apikey ?>', '<?php echo $title_id ?>', '<?php echo $event_id ?>', <?php echo $maxresults ?>, <?php echo empty($autoexpand) ? 'false' : 'true' ?>, '<?php echo $url ?>', '<?php echo $url2 ?>', '<?php echo $url3 ?>', '<?php echo $titleformat ?>');
 			</script>
 			<?php
 		}
@@ -75,6 +79,14 @@ function ko_calendar_load()
 			$maxresults = intval($instance['maxresults']);
 			$autoexpand = empty($instance['autoexpand']) ? FALSE : $instance['autoexpand'];
 			$titleformat = esc_attr($instance['titleformat']);
+
+			$settings = (array)get_option('ko_calendar_settings');
+			$apiKey = esc_attr($settings['apikey']);
+			if ($apiKey == null || $apiKey == "")
+			{
+				// Missing the API key, remind the user.
+				$apiKeyMissing = true;
+			}
 
 			?>
 				<div>
@@ -114,6 +126,10 @@ function ko_calendar_load()
 					</label></td><td width="100%" style="width:100%">
 					<input type="text" style="width:100%" id="<?php echo $this->get_field_id('titleformat'); ?>" name="<?php echo $this->get_field_name('titleformat'); ?>" value="<?php echo $titleformat; ?>" />
 				</td></tr></table>
+				<?php if ($apiKeyMissing) { ?>
+				<p style="color:red">WARNING: You must set a Google API Key before the widget will work.
+				<a href="options-general.php?page=ko_calendar_admin.php">Add your API Key here.</a></p>
+				<?php } ?>
 				<input type="hidden" name="<?php echo $this->get_field_name('submit'); ?>" id="<?php echo $this->get_field_id('submit'); ?>" value="1" />
 				</div>
 			<?php
@@ -143,36 +159,75 @@ function ko_calendar_load()
 		register_widget('WP_Widget_KO_Calendar');
 	}
 	
-	function ko_calendar_settings_init()
+	add_action('admin_menu', 'ko_calendar_admin_menu');
+	function ko_calendar_admin_menu()
 	{
-		// Add the section to reading settings so we can add our
-		// fields to it
+		// See http://kovshenin.com/2012/the-wordpress-settings-api/ for a good tutorial on adding settings
+		add_options_page('Google Calendar Widget', 'Google Calendar Widget', 'manage_options', 'ko_calendar_admin', 'ko_calendar_admin_action');
+	}
+	
+	function ko_calendar_admin_action()
+	{
+		?>
+		<div class="wrap">
+			<h2>Google Calendar Widget</h2>
+			<form action="options.php" method="POST">
+				<?php settings_fields( 'ko_calendar_settings_group' ); ?>
+				<?php do_settings_sections( 'ko_calendar_admin' ); ?>
+				<?php submit_button(); ?>
+			</form>
+		</div>
+		<?php
+	}
+	
+	function ko_calendar_setting_section_function()
+	{
+		?>
+		You need a unique Google API key for users of your web site to access Google services.
+		<ol>
+			<li>Go to <a 'href=https://console.developers.google.com'>https://console.developers.google.com</a>.</li>
+			<li>Create or select a project for your web site</li>
+			<li>In the left sidebar, expand <b>APIs & auth</b> then select <b>APIs</b></li>
+			<li>Change the status of the <b>Calendar API</b> to <b>ON</b></li>
+			<li>In the left sidebar, select <b>Credentials</b></li>
+			<li>Click on <b>Create new Key</b> and choose <b>Browser key</b></li>
+			<li>For testing purposes you can leave the referrers empty, but to prevent your key from being used on unauthorized sites, only allow referrals from domains you administer.</li>
+			<li>Enter the key below</li>
+		</ol>
+		<?php
+	}
+	
+	function ko_calendar_setting_api_key_function()
+	{
+		$settings = (array)get_option('ko_calendar_settings');
+		$apikey = esc_attr($settings['apikey']);
+		echo "<input name='ko_calendar_settings[apikey]' size='40' type='text' value='$apikey' />";
+	}
+
+	add_action('admin_init', 'ko_calendar_admin_init' );
+	function ko_calendar_admin_init()
+	{
+		register_setting( 'ko_calendar_settings_group', 'ko_calendar_settings' );
+
 		add_settings_section(
 			'ko_calendar_setting_section',
-			'Example settings section in reading',
+			'Settings',
 			'ko_calendar_setting_section_function',
-			'reading'
+			'ko_calendar_admin'
 		);
 
-		// Add the field with the names and function to use for our new
-		// settings, put it in our new section
 		add_settings_field(
 			'ko_calendar_setting_api_key',
 			'Google API Key',
 			'ko_calendar_setting_api_key_function',
-			'reading',
+			'ko_calendar_admin',
 			'ko_calendar_setting_section'
 		);
-
-		// Register our setting so that $_POST handling is done for us and
-		// our callback function just has to echo the <input>
-		register_setting( 'reading', 'eg_setting_name' );
 	}
 	
 	add_action('wp_head', 'ko_calendar_head');
 	add_action('init', 'ko_calendar_init');
 	add_action('widgets_init', 'ko_calendar_register_widget');
-	add_action('admin_init', 'ko_calendar_settings_init' );
 }
 
 ko_calendar_load();

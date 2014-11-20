@@ -547,6 +547,7 @@ var ko_calendar = function ()
 	 * URL.  The feed is controlled by several query parameters and a callback 
 	 * function is called to process the feed results.
 	 *
+	 * @param {string} apiKey is the Google API key .
 	 * @param {string} titleId is the id of the element in which the title could be written.
 	 * @param {string} outputId is the id of the element in which the output is to be written.
 	 * @param {string} calendarUrl is the URL for a public calendar feed
@@ -554,13 +555,13 @@ var ko_calendar = function ()
 	 * @param {number} maxResults is the maximum number of results to be written to the output element.
 	 * @param {string} titleFormat is a format string for the event details.
 	 */  
-	function loadCalendar(titleId, outputId, maxResults, autoExpand, calendars, titleFormat)
+	function loadCalendar(apiKey, titleId, outputId, maxResults, autoExpand, calendars, titleFormat)
 	{
 		// Uncomment the following two lines for offline testing.
 		//ko_calendar_test.testCalendar();
 		//return;
 
-		gapi.client.setApiKey('YOUR API KEY HERE');
+		gapi.client.setApiKey(apiKey);
 		gapi.client.load("calendar", "v3").then(function(){
 
 			var requestFunc = createListEvents(titleId, outputId, maxResults, autoExpand, gapi.client.calendar, calendars, titleFormat);
@@ -611,14 +612,14 @@ var ko_calendar = function ()
 		}
 	}
 	
-	result.loadCalendarDefered = function(titleId, outputId, maxResults, autoExpand, calendarUrl, calendarUrl2, calendarUrl3, titleFormat)
+	result.loadCalendarDefered = function(apiKey, titleId, outputId, maxResults, autoExpand, calendarUrl, calendarUrl2, calendarUrl3, titleFormat)
 	{
 		var calendars = new Array();
 		calendars.push(calendarUrl);
 		calendars.push(calendarUrl2);
 		calendars.push(calendarUrl3);
 
-		addInitCallback(function(){loadCalendar(titleId, outputId, maxResults, autoExpand, calendars, titleFormat)});
+		addInitCallback(function(){loadCalendar(apiKey, titleId, outputId, maxResults, autoExpand, calendars, titleFormat)});
 	}
 
 	// Call this when the Google Client API is ready to use.
