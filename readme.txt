@@ -3,7 +3,7 @@ Contributors: poco
 Donate link: http://notions.okuda.ca
 Tags: google, calendar, widget
 Requires at least: 2.8
-Tested up to: 3.7.1
+Tested up to: 3.8.1
 Stable tag: trunk
 
 This plugin installs a sidebar widget that can show the upcoming events from a Google Calendar feed.
@@ -160,14 +160,18 @@ You must replace the text 'YOUR API KEY HERE' with your Google API Key
 
 == Changelog ==
 
-= 1.0 =
-* Initial release
+= 1.4.0 =
+* Upgraded to Google Calendar API v3
+* Replaced calendar "URL" with calendar "ID"
+* Added Setting for Google API Key.  Each site must use a unique key.
 
-= 1.1 =
-* Added ability to support multiple feeds (up to 3) from one widget.
+= 1.3.2 =
+* Optimizations:
+* Removed the version number from the Google jsapi so as to allow for more cache hits with other users.
+* Removed the script includes from the admin interface.
 
-= 1.2 =
-* Added "Expand Entries by Default" checkbox to widget settings to auto expand all the calendar entries.  If this is checked, the each calendar item will open as though they were clicked by default.
+= 1.3.1 =
+* Fixed problem where spaces around the loading GIF caused it to not stop when the calendar loads.
 
 = 1.3 =
 * Remove duplicate events when showing multiple calendars that have been invited to the same event.  If you create an event in calendar A and invite calendar B as a guest, then load them as "url" and "url2", the event should only appear once.
@@ -175,18 +179,14 @@ You must replace the text 'YOUR API KEY HERE' with your Google API Key
 * Added error checking for errors that can occur when used offline (for test servers).
 * Changed the layout of the widget settings to increase the size of the text boxes.
 
-= 1.3.1 =
-* Fixed problem where spaces around the loading GIF caused it to not stop when the calendar loads.
+= 1.2 =
+* Added "Expand Entries by Default" checkbox to widget settings to auto expand all the calendar entries.  If this is checked, the each calendar item will open as though they were clicked by default.
 
-= 1.3.2 =
-* Optimizations:
-* Removed the version number from the Google jsapi so as to allow for more cache hits with other users.
-* Removed the script includes from the admin interface.
+= 1.1 =
+* Added ability to support multiple feeds (up to 3) from one widget.
 
-= 1.4.0 =
-* Upgraded to Google Calendar API v3
-* Replaced calendar "URL" with calendar "ID"
-* Added Setting for Google API Key.  Each site must use a unique key.
+= 1.0 =
+* Initial release
 
 == Upgrade Notice ==
 
