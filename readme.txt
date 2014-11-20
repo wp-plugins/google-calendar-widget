@@ -38,9 +38,20 @@ For example:
 
 == Frequently Asked Questions ==
 
-= Where do I get the calendar feed? =
+= How do I get a Google API Key? =
 
-See the [Google Calendar Support Page](http://www.google.com/support/calendar/bin/answer.py?hl=en&answer=37103).  Just don't forget to change the "/basic" to "/full".
+1. Go to <a 'href=https://console.developers.google.com'>https://console.developers.google.com</a>.
+1. Create or select a project for your web site
+1. In the left sidebar, expand <b>APIs & auth</b> then select <b>APIs</b>
+1. Change the status of the <b>Calendar API</b> to <b>ON</b>
+1. In the left sidebar, select <b>Credentials</b>
+1. Click on <b>Create new Key</b> and choose <b>Browser key</b>
+1. For testing purposes you can leave the referrers empty, but to prevent your key from being used on unauthorized sites, only allow referrals from domains you administer.
+
+
+= Where do I get the calendar id? =
+
+See the here for more information about how to find your calendar key (http://googleappstroubleshootinghelp.blogspot.ca/2012/09/how-to-find-calendar-id-of-google.html).
 
 = How do I change the language of the dates =
 
@@ -83,6 +94,8 @@ With
 	bodyDiv.innerHTML = entryDesc;
 
 = How do I insert this in a theme without a sidebar =
+
+NOTE: After the V3 API upgrade this may not work correctly.
 
 You can insert the widget into a template directly, without adding it to a sidebar, by inserting php code directly into your theme.
 
@@ -138,6 +151,8 @@ Yes!
 I have included an example with the plugin in "examples/stand_alone.html" that shows an example using the plugin code.
 Each element is tagged so it should be flexible for styling; see the existing stylesheet for examples.
 
+NOTE: After the V3 API upgrade this may not work correctly.
+
 == Screenshots ==
 
 1. The widget showing the upcoming Google developer calendar events on the sidebar of the default Wordpress theme.
@@ -170,4 +185,4 @@ Each element is tagged so it should be flexible for styling; see the existing st
 = 1.4.0 =
 * Upgraded to Google Calendar API v3
 * Replaced calendar "URL" with calendar "ID"
-* Added Setting for Google API Key.  It must be retreived for each web site.
+* Added Setting for Google API Key.  Each site must use a unique key.
