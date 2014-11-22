@@ -159,6 +159,11 @@ You must replace the text 'YOUR API KEY HERE' with your Google API Key
 1. The widget showing the upcoming Google developer calendar events on the sidebar of the default Wordpress theme.
 
 == Changelog ==
+= 1.4.2 =
+* Use Google client API batching to query multiple calendars
+* Added support for comma delimited calendar ids.  You can now add multiple calendars in one entry by separating them with commas.
+* Maintained the 3 ID entries for compatibility, but the second and third fields will likely be deprecated in the future and replaced with a single comma delimited list.
+
 = 1.4.1 =
 * Fixed typo data->date
 * Corrected the timezone for the all-day events

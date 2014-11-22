@@ -6,7 +6,7 @@ var ko_calendar = function ()
 	function log(message)
 	{
 		// Firebug debugging console
-		// console.log(message);
+		//console.log(message);
 	}
 	
 	function buildDate(entry)
@@ -287,9 +287,9 @@ var ko_calendar = function ()
 	 *
 	 * @param {json} feedRoot is the root of the feed, containing all entries 
 	 */
-	function createListEvents(titleId, outputId, maxResults, autoExpand, googleService, urls, titleFormat)
+	function createListEvents(titleId, outputId, maxResults, autoExpand, googleService, calendars, titleFormat)
 	{
-		function mergeFeeds(resultArray)
+		function mergeFeeds(resultObject)
 		{
 			// This function merges the input arrays of feeds into one single feed array.
 			// It is assumed that each feed is sorted by date.  We find the earliest item in
@@ -297,12 +297,14 @@ var ko_calendar = function ()
 
 			// Store all of the feed arrays in an an array so we can "shift" items off the list.
 			var entries = new Array();
-			for (var i=0; i < resultArray.length; i++)
+			
+			for (var key in resultObject)
 			{
-				if (resultArray[i])
+				var entry = resultObject[key].result
+				if (entry)
 				{
-					log("Feed " + i + " has " + resultArray[i].items.length + " entries");
-					entries.push(resultArray[i].items);
+					log("Feed " + i + " has " + entry.items.length + " entries");
+					entries.push(entry.items);
 				}
 			}
 			
@@ -390,7 +392,6 @@ var ko_calendar = function ()
 			var len = entries.length;
 			for (var i = 0; i < len; i++) {
 				var entry = entries[i];
-				log("Processing " + entry.summary);
 				var title = entry.summary;
 				var startDateTime = getStartTime(entry);
 				var startJSDate = startDateTime ? startDateTime.getDate() : null;
@@ -467,54 +468,39 @@ var ko_calendar = function ()
 				eventDiv.appendChild(eventList);
 			}
 		}
-		
-		// Keep a list of all of the queries to be sorted later.
-		var sQueries = new Array();
-		
-		// Store the list of urls which we will be iterating through.
-		var sUrls = urls;
 
-		function callback(feedRoot)
+		var batch = gapi.client.newBatch();
+
+		for (var calenderIndex=0; calenderIndex < calendars.length; calenderIndex++)
 		{
-			// If the feed is not invalid then push it into a list.
-			if (feedRoot)
-			{
-				sQueries.push(feedRoot);
-			}
-			
-			var url = '';
-			
-			// Skip blank urls.
-			do 
-			{
-				url = sUrls.pop();
+			var idString = calendars[calenderIndex];
 
-			} while (url == '');
-			
-			if (url != undefined)
+			// Skip blank calendars.
+			if (idString != undefined && idString != '')
 			{
-				var timeMin = new Date().toISOString();
-				var params = {
-					'maxResults': maxResults, 
-					'calendarId': url,
-					'singleEvents':true,
-					'orderBy':'startTime',
-					'timeMin': timeMin
-				};
+				// Split the url by ',' to allow more than just the 3 allowed by the 3 parameters.
+				// TODO: Deprecate the extra calendar ids and eventually elminate them.
+				var idArray = idString.split(',');
+				for (var idIndex=0; idIndex < idArray.length; idIndex++)
+				{
+					var timeMin = new Date().toISOString();
+					var params = {
+						'maxResults': maxResults, 
+						'calendarId': idArray[idIndex],
+						'singleEvents':true,
+						'orderBy':'startTime',
+						'timeMin': timeMin
+					};
 
-				googleService.events.list(params)
-				.then(function(resp){
-					callback(resp.result)
-				});
-			}
-			else
-			{				
-				var finalFeed = mergeFeeds(sQueries);
-				processFinalFeed(finalFeed);
+					batch.add(googleService.events.list(params))
+				}
 			}
 		}
-		
-		return callback;
+
+		batch.then(function(resp){
+			var finalFeed = mergeFeeds(resp.result);
+			processFinalFeed(finalFeed);
+		});
 		
 	}
 
@@ -569,12 +555,7 @@ var ko_calendar = function ()
 
 		gapi.client.setApiKey(apiKey);
 		gapi.client.load("calendar", "v3").then(function(){
-
-			var requestFunc = createListEvents(titleId, outputId, maxResults, autoExpand, gapi.client.calendar, calendars, titleFormat);
-
-			// Calling the created callback with no parameters will start the process of downloading
-			// the set of calendars pushed in with calendar.
-			requestFunc();
+			createListEvents(titleId, outputId, maxResults, autoExpand, gapi.client.calendar, calendars, titleFormat);
 		});
 
 	}
