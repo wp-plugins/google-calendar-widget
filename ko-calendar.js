@@ -6,7 +6,7 @@ var ko_calendar = function ()
 	function log(message)
 	{
 		// Firebug debugging console
-		//console.log(message);
+		// console.log(message);
 	}
 	
 	function buildDate(entry)
@@ -191,13 +191,18 @@ var ko_calendar = function ()
 				}
 				else if (calendarTime.date)
 				{
-					return new Date(calendarTime.date);
+					var date = new Date(calendarTime.date);
+					// Since the date does not include any time zone information, Date() assumes that it is UTC.
+					// But since it is just a date, it is midnight UTC, which is the day before in North America.
+					// This will add the timezone offset to the date to convert the date into local time.
+					date = new Date(date.getTime()+date.getTimezoneOffset()*60*1000);
+					return date;
 				}
 				return null;
 			},
 			"isDateOnly" : function()
 			{
-				return calendarTime.data != null
+				return calendarTime.date != null
 			}
 		}
 		
@@ -385,6 +390,7 @@ var ko_calendar = function ()
 			var len = entries.length;
 			for (var i = 0; i < len; i++) {
 				var entry = entries[i];
+				log("Processing " + entry.summary);
 				var title = entry.summary;
 				var startDateTime = getStartTime(entry);
 				var startJSDate = startDateTime ? startDateTime.getDate() : null;

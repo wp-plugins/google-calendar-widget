@@ -159,6 +159,9 @@ You must replace the text 'YOUR API KEY HERE' with your Google API Key
 1. The widget showing the upcoming Google developer calendar events on the sidebar of the default Wordpress theme.
 
 == Changelog ==
+= 1.4.1 =
+* Fixed typo data->date
+* Corrected the timezone for the all-day events
 
 = 1.4.0 =
 * Upgraded to Google Calendar API v3
