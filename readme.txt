@@ -3,7 +3,7 @@ Contributors: poco
 Donate link: http://notions.okuda.ca
 Tags: google, calendar, widget
 Requires at least: 2.8
-Tested up to: 3.8.1
+Tested up to: 4.0
 Stable tag: trunk
 
 This plugin installs a sidebar widget that can show the upcoming events from a Google Calendar feed.
