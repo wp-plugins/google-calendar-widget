@@ -3,12 +3,10 @@
 Plugin Name: Google Calendar Widget
 Plugin URI: http://notions.okuda.ca/wordpress-plugins/google-calendar-widget/
 Description: This plugin adds a sidebar widget containing an agenda from a Google Calendar.  It is based on the Google Calendar samples and inspired by wpng-calendar.  It is smaller and simpler than wpng-calendar and allows for multiple widgets to each show their own agenda.
-Version: 1.4.2
+Version: 1.4.3
 Author: Kaz Okuda
 Author URI: http://notions.okuda.ca
 */
-
-define('KO_CALENDAR_URL', WP_PLUGIN_URL . '/google-calendar-widget');
 
 function ko_calendar_load()
 {
@@ -38,7 +36,7 @@ function ko_calendar_load()
 			echo $before_widget;
 			echo $before_title . '<div class="ko-calendar-widget-title" id="' . $title_id . '">' . $title . '</div>' . $after_title;
 			echo '<div class="ko-calendar-widget-events" id="' . $event_id . '">';
-			echo '<div class="ko-calendar-widget-loading"><img class="ko-calendar-widget-image" src="' . KO_CALENDAR_URL . '/loading.gif" alt="Loading..."/></div>';
+			echo '<div class="ko-calendar-widget-loading"><img class="ko-calendar-widget-image" src="' . plugins_url('/loading.gif', __FILE__) . '" alt="Loading..."/></div>';
 			echo '</div>';
 			echo $after_widget;
 			
@@ -138,7 +136,7 @@ function ko_calendar_load()
 	
 	function ko_calendar_head()
 	{
-		echo '<link type="text/css" rel="stylesheet" href="' . KO_CALENDAR_URL . '/ko-calendar.css" />';
+		echo '<link type="text/css" rel="stylesheet" href="' . plugins_url('ko-calendar.css', __FILE__) . '" />';
 	}
 
 	function ko_calendar_init()
@@ -146,10 +144,10 @@ function ko_calendar_load()
 		if ( !is_admin() )
 		{
 			// I believe that the google apikey is no longer needed
-			wp_enqueue_script('wiky-js', KO_CALENDAR_URL . '/wiky.js', null, '1.0');
-			wp_enqueue_script('date-js', KO_CALENDAR_URL . '/date.js', null, 'alpha-1');
-			//wp_enqueue_script('ko-calendar-test', KO_CALENDAR_URL . '/ko-calendar-test.js', array('date-js', 'google'));
-			wp_enqueue_script('ko-calendar', KO_CALENDAR_URL . '/ko-calendar.js', array('date-js'));
+			wp_enqueue_script('wiky-js', plugins_url('wiky.js', __FILE__), null, '1.0');
+			wp_enqueue_script('date-js', plugins_url('/date.js', __FILE__), null, 'alpha-1');
+			//wp_enqueue_script('ko-calendar-test', plugins_url('/ko-calendar-test.js', __FILE__), array('date-js', 'google'));
+			wp_enqueue_script('ko-calendar', plugins_url('/ko-calendar.js', __FILE__), array('date-js'));
 			wp_enqueue_script('googleclient', 'http://apis.google.com/js/client.js?onload=ko_calendar_google_init', array('ko-calendar'), false, true);
 		}
 	}
@@ -185,7 +183,7 @@ function ko_calendar_load()
 		?>
 		You need a unique Google API key for users of your web site to access Google services.
 		<ol>
-			<li>Go to <a 'href=https://console.developers.google.com'>https://console.developers.google.com</a>.</li>
+			<li>Go to <a href='https://console.developers.google.com'>https://console.developers.google.com</a>.</li>
 			<li>Create or select a project for your web site</li>
 			<li>In the left sidebar, expand <b>APIs & auth</b> then select <b>APIs</b></li>
 			<li>Change the status of the <b>Calendar API</b> to <b>ON</b></li>

@@ -159,6 +159,13 @@ You must replace the text 'YOUR API KEY HERE' with your Google API Key
 1. The widget showing the upcoming Google developer calendar events on the sidebar of the default Wordpress theme.
 
 == Changelog ==
+= 1.4.3 =
+* Replaced WP_PLUGIN_URL with plugins_url for better compatibility
+* Fixed typo in php which broke the Google Console URL in the settings screen
+* Added error handling to batch query (it returns success even when parts of the batch fail, so we have to now check for individual errors).
+* Entry will now expand with the time and location even if there is no description.
+* Removed some unused code.
+
 = 1.4.2 =
 * Use Google client API batching to query multiple calendars
 * Added support for comma delimited calendar ids.  You can now add multiple calendars in one entry by separating them with commas.

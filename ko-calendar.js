@@ -5,10 +5,20 @@ var ko_calendar = function ()
 
 	function log(message)
 	{
-		// Firebug debugging console
-		//console.log(message);
+		// if (typeof console == "object" && typeof console.log == "function")
+		// {
+			// console.log(message);
+		// }
 	}
 	
+	function error(message)
+	{
+		if (typeof console == "object" && typeof console.error == "function")
+		{
+			console.error(message);
+		}
+	}
+
 	function buildDate(entry)
 	{
 		/* display the date/time */
@@ -244,12 +254,6 @@ var ko_calendar = function ()
 	 */
 	function createClickHandler(item, entry)
 	{
-		var entryDesc = entry.description;
-		if (entryDesc == null)
-		{
-			return function() {}
-		}
-
 		var descDiv = null;
 		return function () 
 		{
@@ -263,7 +267,7 @@ var ko_calendar = function ()
 				bodyDiv = document.createElement('div');
 				bodyDiv.setAttribute('className','ko-calendar-entry-body');
 				bodyDiv.setAttribute('class','ko-calendar-entry-body');
-				bodyDiv.innerHTML = Wiky.toHtml(entryDesc);
+				bodyDiv.innerHTML = Wiky.toHtml(entry.description != null ? entry.description : "");
 				descDiv.appendChild(bodyDiv);
 
 				item.appendChild(descDiv);
@@ -303,8 +307,16 @@ var ko_calendar = function ()
 				var entry = resultObject[key].result
 				if (entry)
 				{
-					log("Feed " + i + " has " + entry.items.length + " entries");
-					entries.push(entry.items);
+					// Check for errors
+					if (entry.error)
+					{
+						error("Error downloading Calendar " + key + " : " + entry.error.message);
+					}
+					else
+					{
+						log("Feed " + key + " has " + entry.items.length + " entries");
+						entries.push(entry.items);
+					}
 				}
 			}
 			
@@ -483,16 +495,17 @@ var ko_calendar = function ()
 				var idArray = idString.split(',');
 				for (var idIndex=0; idIndex < idArray.length; idIndex++)
 				{
+					var calendarId = idArray[idIndex];
 					var timeMin = new Date().toISOString();
 					var params = {
 						'maxResults': maxResults, 
-						'calendarId': idArray[idIndex],
+						'calendarId': calendarId,
 						'singleEvents':true,
 						'orderBy':'startTime',
 						'timeMin': timeMin
 					};
 
-					batch.add(googleService.events.list(params))
+					batch.add(googleService.events.list(params), {'id': calendarId});
 				}
 			}
 		}
@@ -502,36 +515,6 @@ var ko_calendar = function ()
 			processFinalFeed(finalFeed);
 		});
 		
-	}
-
-	/**
-	 * Callback function for the Google data JS client library to call when an error
-	 * occurs during the retrieval of the feed.  Details available depend partly
-	 * on the web browser, but this shows a few basic examples. In the case of
-	 * a privileged environment using ClientLogin authentication, there may also
-	 * be an e.type attribute in some cases.
-	 *
-	 * @param {Error} e is an instance of an Error 
-	 */
-	function handleGDError(e) {
-		
-		// For production code, just ignore the error
-		// Remove the return below for testing.
-		return;
-	
-		//document.getElementById('jsSourceFinal').setAttribute('style', 'display:none');
-		if (e instanceof Error) {
-			/* alert with the error line number, file and message */
-			alert('Error at line ' + e.lineNumber + ' in ' + e.fileName + '\n' + 'Message: ' + e.message);
-			/* if available, output HTTP error code and status text */
-			if (e.cause) {
-				var status = e.cause.status;
-				var statusText = e.cause.statusText;
-				alert('Root cause: HTTP error ' + status + ' with status text of: ' + statusText);
-			}
-		} else {
-			alert(e.toString());
-		}
 	}
 
 	/**
