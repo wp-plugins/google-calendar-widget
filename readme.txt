@@ -159,6 +159,9 @@ You must replace the text 'YOUR API KEY HERE' with your Google API Key
 1. The widget showing the upcoming Google developer calendar events on the sidebar of the default Wordpress theme.
 
 == Changelog ==
+= 1.4.4 =
+* Clearer error message if using an invalid API key.
+
 = 1.4.3 =
 * Replaced WP_PLUGIN_URL with plugins_url for better compatibility
 * Fixed typo in php which broke the Google Console URL in the settings screen

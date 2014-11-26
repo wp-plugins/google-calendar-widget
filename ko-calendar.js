@@ -537,8 +537,15 @@ var ko_calendar = function ()
 		//return;
 
 		gapi.client.setApiKey(apiKey);
-		gapi.client.load("calendar", "v3").then(function(){
-			createListEvents(titleId, outputId, maxResults, autoExpand, gapi.client.calendar, calendars, titleFormat);
+		gapi.client.load("calendar", "v3").then(function(result){
+			if (result.error)
+			{
+				error("Error loading calendar client API (Could be due to an invalid API Key) : " + result.error.message );
+			}
+			else
+			{
+				createListEvents(titleId, outputId, maxResults, autoExpand, gapi.client.calendar, calendars, titleFormat);
+			}
 		});
 
 	}
