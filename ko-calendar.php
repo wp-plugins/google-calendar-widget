@@ -148,7 +148,7 @@ function ko_calendar_load()
 			wp_enqueue_script('date-js', plugins_url('/date.js', __FILE__), null, 'alpha-1');
 			//wp_enqueue_script('ko-calendar-test', plugins_url('/ko-calendar-test.js', __FILE__), array('date-js', 'google'));
 			wp_enqueue_script('ko-calendar', plugins_url('/ko-calendar.js', __FILE__), array('date-js'));
-			wp_enqueue_script('googleclient', 'http://apis.google.com/js/client.js?onload=ko_calendar_google_init', array('ko-calendar'), false, true);
+			wp_enqueue_script('googleclient', '//apis.google.com/js/client.js?onload=ko_calendar_google_init', array('ko-calendar'), false, true);
 		}
 	}
 
