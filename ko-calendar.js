@@ -538,7 +538,7 @@ var ko_calendar = function ()
 
 		gapi.client.setApiKey(apiKey);
 		gapi.client.load("calendar", "v3").then(function(result){
-			if (result.error)
+			if (result && result.error)
 			{
 				error("Error loading calendar client API (Could be due to an invalid API Key) : " + result.error.message );
 			}
