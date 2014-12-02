@@ -22,7 +22,7 @@ var ko_calendar = function ()
 	function buildDate(entry)
 	{
 		/* display the date/time */
-		var dateString = 'All Day Event';
+		var dateString = ko_calendar_loc.all_day_event; //'All Day Event';
 
 		/* if the event has a date & time, override the default text */
 		var startTime = getStartTime(entry);
@@ -59,7 +59,7 @@ var ko_calendar = function ()
 
 			if (allDayEvent)
 			{
-				dateString = 'All Day Event';
+				dateString = ko_calendar_loc.all_day_event; //'All Day Event';
 			}
 			else if (oneDayEvent)
 			{
@@ -156,7 +156,7 @@ var ko_calendar = function ()
 		{
 			if (startDateTime.isDateOnly())
 			{
-				startTimeString = "All Day";
+				startTimeString = ko_calendar_loc.all_day; //"All Day";
 			}
 			else
 			{

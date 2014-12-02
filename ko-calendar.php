@@ -14,9 +14,9 @@ function ko_calendar_load()
 	{
 		function WP_Widget_KO_Calendar()
 		{
-			$widget_ops = array('classname' => 'ko_calendar', 'description' => __('Google Calendar Agenda Widget'));
+			$widget_ops = array('classname' => 'ko_calendar', 'description' => __('Google Calendar Widget', 'ko-calendar'));
 			$control_ops = array('width' => 400, 'height' => 200);
-			$this->WP_Widget('ko_calendar', __('Google Calendar'), $widget_ops, $control_ops);
+			$this->WP_Widget('ko_calendar', __('Google Calendar', 'ko-calendar'), $widget_ops, $control_ops);
 		}
 		
 		function widget($args, $instance)
@@ -90,43 +90,43 @@ function ko_calendar_load()
 				<div>
 				<table width="100%"><tr><td>
 					<label for="<?php echo $this->get_field_id('title'); ?>" style="line-height:35px;display:block;">
-						Calendar&nbsp;Title:
+						<?php _e('Calendar&nbsp;Title');?>:
 					</label></td><td width="100%" style="width:100%">
 					<input type="text" style="width:100%" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" value="<?php echo $title; ?>" />
 				</td></tr></table><table width="100%"><tr><td>
 					<label for="<?php echo $this->get_field_id('maxresults'); ?>" style="line-height:35px;display:block;">
-						Maximum&nbsp;Results:
+						<?php _e('Maximum&nbsp;Results');?>:
 					</label></td><td width="100%" style="width:100%">
 					<input type="text" id="<?php echo $this->get_field_id('maxresults'); ?>" name="<?php echo $this->get_field_name('maxresults'); ?>" value="<?php echo $maxresults; ?>" />
 				</td></tr></table><table width="100%"><tr><td>
 					<label for="<?php echo $this->get_field_id('autoexpand'); ?>" style="line-height:35px;display:block;">
-						Expand&nbsp;Entries&nbsp;by&nbsp;Default:
+						<?php _e('Expand&nbsp;Entries&nbsp;by&nbsp;Default');?>:
 					</label></td><td width="100%" style="width:100%">
 					<input type="checkbox" id="<?php echo $this->get_field_id('autoexpand'); ?>" name="<?php echo $this->get_field_name('autoexpand'); ?>" <?php echo empty($autoexpand) ? '' : 'checked'; ?> value="true" />
 				</td></tr></table><table width="100%"><tr><td>
 					<label for="<?php echo $this->get_field_id('url'); ?>" style="line-height:35px;display:block;">
-						Calendar&nbsp;ID&nbsp;1:
+						<?php _e('Calendar&nbsp;ID&nbsp;1');?>:
 					</label></td><td width="100%" style="width:100%">
 					<input type="text" style="width:100%" id="<?php echo $this->get_field_id('url'); ?>" name="<?php echo $this->get_field_name('url'); ?>" value="<?php echo $url; ?>" />
 				</td></tr></table><table width="100%"><tr><td>
 					<label for="<?php echo $this->get_field_id('url2'); ?>" style="line-height:35px;display:block;">
-						Calendar&nbsp;ID&nbsp;2&nbsp;(Optional):
+						<?php _e('Calendar&nbsp;ID&nbsp;2&nbsp;(Optional)');?>:
 					</label></td><td width="100%" style="width:100%">
 					<input type="text" style="width:100%" id="<?php echo $this->get_field_id('url2'); ?>" name="<?php echo $this->get_field_name('url2'); ?>" value="<?php echo $url2; ?>" />
 				</td></tr></table><table width="100%"><tr><td>
 					<label for="<?php echo $this->get_field_id('url3'); ?>" style="line-height:35px;display:block;">
-						Calendar&nbsp;ID&nbsp;3&nbsp;(Optional):
+						<?php _e('Calendar&nbsp;ID&nbsp;3&nbsp;(Optional)');?>:
 					</label></td><td width="100%" style="width:100%">
 					<input type="text" style="width:100%" id="<?php echo $this->get_field_id('url3'); ?>" name="<?php echo $this->get_field_name('url3'); ?>" value="<?php echo $url3; ?>" />
 				</td></tr></table><table width="100%"><tr><td>
 					<label for="<?php echo $this->get_field_id('titleformat'); ?>" style="line-height:35px;display:block;">
-						Event&nbsp;Title&nbsp;Format:
+						<?php _e('Event&nbsp;Title&nbsp;Format');?>:
 					</label></td><td width="100%" style="width:100%">
 					<input type="text" style="width:100%" id="<?php echo $this->get_field_id('titleformat'); ?>" name="<?php echo $this->get_field_name('titleformat'); ?>" value="<?php echo $titleformat; ?>" />
 				</td></tr></table>
 				<?php if ($apiKeyMissing) { ?>
-				<p style="color:red">WARNING: You must set a Google API Key before the widget will work.
-				<a href="options-general.php?page=ko_calendar_admin.php">Add your API Key here.</a></p>
+				<p style="color:red"><?php _e('WARNING: You must set a Google API Key before the widget will work.');?>
+				<a href="options-general.php?page=ko_calendar_admin.php"><?php _e('Add your API Key here.');?></a></p>
 				<?php } ?>
 				<input type="hidden" name="<?php echo $this->get_field_name('submit'); ?>" id="<?php echo $this->get_field_id('submit'); ?>" value="1" />
 				</div>
@@ -134,20 +134,34 @@ function ko_calendar_load()
 		}
 	}
 	
+	function ko_calendar_plugins_loaded()
+	{
+		load_plugin_textdomain('ko-calendar', false, basename( dirname( __FILE__ ) ) . '/languages' );
+	}
+
 	function ko_calendar_head()
 	{
 		echo '<link type="text/css" rel="stylesheet" href="' . plugins_url('ko-calendar.css', __FILE__) . '" />';
 	}
 
 	function ko_calendar_init()
-	{
+	{	
 		if ( !is_admin() )
 		{
+			// Register our script first, then localize, then enqueue.
+			wp_register_script('ko-calendar', plugins_url('/ko-calendar.js', __FILE__), array('date-js'));
+
+			$translation_array = array(
+				'all_day' => __( 'All Day', 'ko-calendar'),
+				'all_day_event' => __( 'All Day Event', 'ko-calendar')
+			);
+			wp_localize_script( 'ko-calendar', 'ko_calendar_loc', $translation_array);
+
 			// I believe that the google apikey is no longer needed
 			wp_enqueue_script('wiky-js', plugins_url('wiky.js', __FILE__), null, '1.0');
 			wp_enqueue_script('date-js', plugins_url('/date.js', __FILE__), null, 'alpha-1');
 			//wp_enqueue_script('ko-calendar-test', plugins_url('/ko-calendar-test.js', __FILE__), array('date-js', 'google'));
-			wp_enqueue_script('ko-calendar', plugins_url('/ko-calendar.js', __FILE__), array('date-js'));
+			wp_enqueue_script('ko-calendar');
 			wp_enqueue_script('googleclient', '//apis.google.com/js/client.js?onload=ko_calendar_google_init', array('ko-calendar'), false, true);
 		}
 	}
@@ -161,14 +175,14 @@ function ko_calendar_load()
 	function ko_calendar_admin_menu()
 	{
 		// See http://kovshenin.com/2012/the-wordpress-settings-api/ for a good tutorial on adding settings
-		add_options_page('Google Calendar Widget', 'Google Calendar Widget', 'manage_options', 'ko_calendar_admin', 'ko_calendar_admin_action');
+		add_options_page(__('Google Calendar Widget', 'ko-calendar'), __('Google Calendar Widget', 'ko-calendar'), 'manage_options', 'ko_calendar_admin', 'ko_calendar_admin_action');
 	}
 	
 	function ko_calendar_admin_action()
 	{
 		?>
 		<div class="wrap">
-			<h2>Google Calendar Widget</h2>
+			<h2><?php _e("Google Calendar Widget")?></h2>
 			<form action="options.php" method="POST">
 				<?php settings_fields( 'ko_calendar_settings_group' ); ?>
 				<?php do_settings_sections( 'ko_calendar_admin' ); ?>
@@ -223,6 +237,7 @@ function ko_calendar_load()
 		);
 	}
 	
+	add_action('plugins_loaded', 'ko_calendar_plugins_loaded');
 	add_action('wp_head', 'ko_calendar_head');
 	add_action('init', 'ko_calendar_init');
 	add_action('widgets_init', 'ko_calendar_register_widget');
