@@ -223,14 +223,14 @@ function ko_calendar_load()
 
 		add_settings_section(
 			'ko_calendar_setting_section',
-			'Settings',
+			__('Settings', 'ko-calendar'),
 			'ko_calendar_setting_section_function',
 			'ko_calendar_admin'
 		);
 
 		add_settings_field(
 			'ko_calendar_setting_api_key',
-			'Google API Key',
+			__('Google API Key', 'ko-calendar'),
 			'ko_calendar_setting_api_key_function',
 			'ko_calendar_admin',
 			'ko_calendar_setting_section'
