@@ -460,7 +460,7 @@ var ko_calendar = function ()
 					entryTitle.setAttribute('href', "javascript:;");
 
 					var titleString = formatEventDetails(titleFormat, entry);
-					entryTitle.appendChild(document.createTextNode(titleString));
+					entryTitle.innerHTML = titleString;
 
 					// Show and hide the entry text when the entryTitleDiv is clicked.
 					entryTitle.onclick = createClickHandler(li, entry);
