@@ -4,7 +4,7 @@ Donate link: http://notions.okuda.ca
 Tags: google, calendar, widget
 Requires at least: 2.8
 Tested up to: 4.0
-Stable tag: 1.4.4
+Stable tag: 1.4.5
 
 This plugin installs a sidebar widget that can show the upcoming events from a Google Calendar feed.
 
@@ -140,11 +140,14 @@ That is, [ENDTIME - ] will insert " - " after the end time, if and only if there
 
 If an event is an all-day event, then [STARTTIME] will be replaced with "All Day" and no [ENDTIME] will defined.
 
+All html tags are stripped except <br> and <p> tags.
+
 Examples
 
-*	"[STARTTIME] - [TITLE]"				becomes "6:00AM - Test Event" or "All Day - Test Event"
-*	"[STARTTIME] - [ENDTIME - ][TITLE]"	becomes "6:00AM - 9:00AM - Test Event" or "All Day - Test Event"
-*	"[STARTTIME][ - ENDTIME] : [TITLE]"	becomes "6:00AM - 9:00AM : Test Event" or "All Day : Test Event"
+*	"[STARTTIME] - [TITLE]"				 becomes "6:00AM - Test Event" or "All Day - Test Event"
+*	"[STARTTIME] - [ENDTIME - ][TITLE]"	 becomes "6:00AM - 9:00AM - Test Event" or "All Day - Test Event"
+*	"[STARTTIME][ - ENDTIME] : [TITLE]"	 becomes "6:00AM - 9:00AM : Test Event" or "All Day : Test Event"
+*   "[STARTTIME][ - ENDTIME]<br>[TITLE]" becomes "6:00AM - 9:00AM<br>Test Event" or "All Day<br>Test Event"
 
 = Can I use this code outside of Wordpress in an HTML page? =
 
@@ -159,6 +162,12 @@ You must replace the text 'YOUR API KEY HERE' with your Google API Key
 1. The widget showing the upcoming Google developer calendar events on the sidebar of the default Wordpress theme.
 
 == Changelog ==
+
+= 1.4.5 =
+* Made URL of apis.google.com protocol relative so it will work with secure sites
+* Added initial support for localization and an en_US localization database.  I will include user contributed localizations.
+* Added support for <br> and <p> tags inside of the title format to get more formatting options.  For example "[STARTTIME][ - ENDTIME]<br/>[TITLE]"
+
 = 1.4.4 =
 * Clearer error message if using an invalid API key.
 
