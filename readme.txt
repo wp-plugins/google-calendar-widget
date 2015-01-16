@@ -89,11 +89,11 @@ It expects that the calendar item descriptions are marked up using that format. 
 
 If you wish to remove this transformation simply replace the following line in ko-calendar.js
 
-	bodyDiv.innerHTML = Wiky.toHtml(entryDesc);
+	bodyDiv.innerHTML = Wiky.toHtml(entry.description != null ? entry.description : "");
 
 With
 
-	bodyDiv.innerHTML = entryDesc;
+	bodyDiv.innerHTML = entry.description != null ? entry.description : "";
 
 = How do I insert this in a theme without a sidebar =
 
