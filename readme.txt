@@ -4,7 +4,7 @@ Donate link: http://notions.okuda.ca
 Tags: google, calendar, widget
 Requires at least: 2.8
 Tested up to: 4.0
-Stable tag: 1.4.5
+Stable tag: 1.4.6
 
 This plugin installs a sidebar widget that can show the upcoming events from a Google Calendar feed.
 
@@ -162,6 +162,9 @@ You must replace the text 'YOUR API KEY HERE' with your Google API Key
 1. The widget showing the upcoming Google developer calendar events on the sidebar of the default Wordpress theme.
 
 == Changelog ==
+
+= 1.4.6 = 
+* Added definition of ko_calendar_loc if it was not previously defined by the wordpress loc system to support stand alone pages.
 
 = 1.4.5 =
 * Made URL of apis.google.com protocol relative so it will work with secure sites

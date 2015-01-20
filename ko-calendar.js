@@ -532,6 +532,16 @@ var ko_calendar = function ()
 	 */  
 	function loadCalendar(apiKey, titleId, outputId, maxResults, autoExpand, calendars, titleFormat)
 	{
+		if (typeof ko_calendar_loc === 'undefined')
+		{
+			// When running stand along without the wordpress localization
+			// we need to supply the default loc text.
+			ko_calendar_loc = {
+				'all_day':'All Day',
+				'all_day_event':'All Day Event'
+			};
+		}
+
 		// Uncomment the following two lines for offline testing.
 		//ko_calendar_test.testCalendar();
 		//return;

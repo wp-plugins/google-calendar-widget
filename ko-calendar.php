@@ -3,7 +3,7 @@
 Plugin Name: Google Calendar Widget
 Plugin URI: http://notions.okuda.ca/wordpress-plugins/google-calendar-widget/
 Description: This plugin adds a sidebar widget containing an agenda from a Google Calendar.  It is based on the Google Calendar samples and inspired by wpng-calendar.  It is smaller and simpler than wpng-calendar and allows for multiple widgets to each show their own agenda.
-Version: 1.4.5
+Version: 1.4.6
 Author: Kaz Okuda
 Author URI: http://notions.okuda.ca
 */
